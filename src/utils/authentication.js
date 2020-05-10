@@ -56,7 +56,7 @@ async function verifyJwt(jwt) {
         return jsonwebtoken.verify(
             token,
             PUB_KEY,
-            { ignoreExpiration: false, algorithms: ["RS256"] },
+            { ignoreExpiration: true, algorithms: ["RS256"] },
             (err, payload) => {
                 if (err && err.name === "TokenExpiredError") {
                     throw new AuthenticationError("Token Expired")

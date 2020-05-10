@@ -8,9 +8,11 @@ module.exports.constants = {
         }
     },
     errorCodes: {
-        emailExists: 1,
-        emailDoesNotExists: 2,
-        noError: 0
+        emailExists: "1",
+        emailDoesNotExists: "2",
+        noError: "0",
+        invalidCreds: "3",
+        unknownError: "1000"
     }
 }
 

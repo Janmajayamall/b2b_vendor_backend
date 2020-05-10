@@ -2,32 +2,12 @@ const { gql } = require("apollo-server-express")
 
 module.exports = gql`
     """
-    type PointOfContact
-    Used for pointOfContact within the company
-    that is being registered
-    """
-    type PointOfContact {
-        name: String!
-        contactNumber: String
-    }
-
-    """
     type LocationCoordinates
     Used for describing the location of the company/user
     """
     type LocationCoordinates {
         lat: String!
         lon: String!
-    }
-
-    """
-    input pointOfContact
-    Used for assigning point of contact for people within
-    a company
-    """
-    input pointOfContact {
-        name: String!
-        contactNumber: String
     }
 
     """
@@ -41,42 +21,35 @@ module.exports = gql`
 
     """
     input registerVendorInput
-    Used for registration of vendors
+    Used for registration of vendor, along with its profile
     """
     input registerVendorInput {
         emailId: String!
         password: String!
-    }
-
-    """
-    input createVendorProfileInput
-    User for creating vendor profile
-    """
-    input createVendorProfileInput {
         name: String!
         contactEmailId: String!
         contactNumber: String!
-        companyId: String!
     }
 
     """
     input registerBuyerInput
-    Used for registration of vendors
+    User for registration of buyer, along with its profile
     """
     input registerBuyerInput {
         emailId: String!
         password: String!
-    }
-
-    """
-    input createBuyerProfileInput
-    User for creating vendor profile
-    """
-    input createBuyerProfileInput {
         name: String!
         contactEmailId: String!
         contactNumber: String!
-        companyId: String!
+    }
+
+    """
+    input loginInput
+    Used for login by any type of user
+    """
+    input loginInput {
+        emailId: String!
+        password: String!
     }
 
     """
@@ -152,18 +125,25 @@ module.exports = gql`
         error: String
     }
 
+    """
+    type ErrorStateResponse
+    Used for response containing just error state
+    """
+    type ErrorStateResponse {
+        error: String!
+    }
+
     type Mutation {
         #vendors
-        registerVendor(userInput: registerVendorInput!): Boolean!
+        registerVendor(userInput: registerVendorInput!): ErrorStateResponse!
 
         #vendorProfiles
-        createVendorProfile(userInput: createVendorProfileInput!): Boolean!
 
         #buyers
-        registerBuyer(userInput: registerBuyerInput): Boolean!
+        registerBuyer(userInput: registerBuyerInput): ErrorStateResponse!
+        loginBuyer(userInput: loginInput): AuthenticationResponse!
 
         #buyerProfiles
-        createBuyerProfile(userInput: createBuyerProfileInput!): Boolean!
 
         #vendorCategoryProducts
         addCategoryProducts(userInput: addCategoryProductsInput!): Boolean!

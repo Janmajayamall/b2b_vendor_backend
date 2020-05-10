@@ -7,21 +7,21 @@ async function createCompanyProfile(clients, registrationObject, companyId) {
         TableName: tableSchemas.companyProfiles.tableName,
         Item: {
             id: companyId,
-            name: registrationObject.name,
-            country: registrationObject.country,
-            city: registrationObject.city,
-            address: registrationObject.address,
-            description: registrationObject.description,
+            name: registrationObject.name.trim(),
+            country: registrationObject.country.trim(),
+            city: registrationObject.city.trim(),
+            address: registrationObject.address.trim(),
+            description: registrationObject.description.trim(),
             locationCoordinates: {
                 lat: registrationObject.locationCoordinates.lat,
                 lon: registrationObject.locationCoordinates.lon
             },
-            contactEmailId: registrationObject.contactEmailId,
-            contactNumber: registrationObject.contactNumber,
-            website: registrationObject.website,
-            linkedIn: registrationObject.linkedIn,
-            createdAt: String(new Date().getTime()),
-            lastModified: String(new Date().getTime()),
+            contactEmailId: registrationObject.contactEmailId.trim(),
+            contactNumber: registrationObject.contactNumber.trim(),
+            website: registrationObject.website.trim(),
+            linkedIn: registrationObject.linkedIn.trim(),
+            createdAt: new Date().getTime(),
+            lastModified: new Date().getTime(),
             status: "ACTIVE"
         },
         ConditionExpression: "attribute_not_exists(id)"

@@ -1,7 +1,7 @@
 const { v4: uuidv4 } = require("uuid")
 const tableSchemas = require("./../../tableSchemas")
 
-async function createItemOrders(clients, queries, createOrdersInput, userId) {
+async function createItemOrders(clients, queries, createOrdersInput, buyerId) {
     //declaring groupId for this group of items
     const buyerGroupId = uuidv4()
 
@@ -22,54 +22,22 @@ async function createItemOrders(clients, queries, createOrdersInput, userId) {
         let operation = {
             PutRequest: {
                 Item: {
-                    id: {
-                        S: uuidv4()
-                    },
-                    buyerId: {
-                        S: userId
-                    },
-                    buyerRfqId: {
-                        S: element.buyerRfqId
-                    },
-                    buyerPrId: {
-                        S: element.buyerPrId
-                    },
-                    buyerItemId: {
-                        S: element.buyerItemId
-                    },
-                    productName: {
-                        S: element.productName
-                    },
-                    productDescription: {
-                        S: element.productDescription
-                    },
-                    quantity: {
-                        N: element.quantity
-                    },
-                    unit: {
-                        S: element.unit
-                    },
-                    termsAndConditions: {
-                        S: element.termsAndConditions
-                    },
-                    productParameters: {
-                        M: productParametersOps
-                    },
-                    deliveryDays: {
-                        N: element.deliveryDays
-                    },
-                    buyerGroupId: {
-                        S: buyerGroupId
-                    },
-                    createdAt: {
-                        N: String(new Date().getTime())
-                    },
-                    lastModified: {
-                        N: String(new Date().getTime())
-                    },
-                    status: {
-                        S: "ACTIVE"
-                    }
+                    id: uuidv4(),
+                    buyerId: buyerId.trim(),
+                    buyerRfqId: element.buyerRfqId.trim(),
+                    buyerPrId: element.buyerPrId.trim(),
+                    buyerItemId: element.buyerItemId.trim(),
+                    productName: element.productName.trim(),
+                    productDescription: element.productDescription.trim(),
+                    quantity: parseFloat(element.quantity.trim()),
+                    unit: element.unit.trim(),
+                    termsAndConditions: element.termsAndConditions.trim(),
+                    productParameters: productParametersOps,
+                    deliveryDays: parseFloat(element.deliveryDays.trim()),
+                    buyerGroupId: buyerGroupId,
+                    createdAt: new Date().getTime(),
+                    lastModified: new Date().getTime(),
+                    status: "ACTIVE"
                 }
             }
         }
@@ -84,7 +52,7 @@ async function createItemOrders(clients, queries, createOrdersInput, userId) {
     batchWritesReq["RequestItems"][tableSchemas.itemOrders.tableName] = batchItemOrdersWriteOperations
 
     //carrying out the batch write operations
-    const result = await clients.dynamodbClient.batchWriteItem(batchWritesReq).promise()
+    const result = await clients.dynamodbClient.batchWrite(batchWritesReq).promise()
 
     //finding vendors for the items orders
     const esRes = await queries.esQueries.getMatchedVendors(clients.esClient, {

@@ -1,6 +1,6 @@
 const { v4: uuidv4 } = require("uuid")
 const tableSchemas = require("./../../tableSchemas")
-const { generatePasswordHash, constants } = require("./../utils/index")
+const { generatePasswordHash, constants, issueJwt, verifyPasswordHash } = require("./../utils/index")
 
 async function registerVendor(clients, queries, registrationObject, companyId) {
     const passwordHash = await generatePasswordHash(registrationObject.password.trim())
@@ -46,6 +46,55 @@ async function registerVendor(clients, queries, registrationObject, companyId) {
         }
     }
 }
+
+async function loginVendor(clients, queries, loginObject) {
+    //getting vendor object
+    const resultObject = await clients.dynamodbClient
+        .get({
+            TableName: tableSchemas.vendors.tableName,
+            Key: {
+                emailId: loginObject.emailId.trim()
+            }
+        })
+        .promise()
+
+    //checking whether user exits or not
+    if (Object.keys(resultObject).length === 0) {
+        return {
+            error: constants.errorCodes.emailDoesNotExists
+        }
+    }
+
+    try {
+        //verify the password
+        const passwordRes = await verifyPasswordHash(resultObject.Item.passwordHash, loginObject.password.trim())
+
+        if (passwordRes === true) {
+            //generating jwt token & sending bacl
+            const jwt = await issueJwt(resultObject.Item.id)
+
+            //checking whether profile of the buyer exists or not
+            const vendorProfile = await queries.dynamodbQueries.getVendorProfile(clients, resultObject.Item.id)
+
+            return {
+                jwt: jwt,
+                profileCreated: Object.keys(vendorProfile) !== 0,
+                error: constants.errorCodes.noError
+            }
+        } else {
+            return {
+                error: constants.errorCodes.invalidCreds
+            }
+        }
+    } catch (e) {
+        console.log("loginVendor error:", e)
+        return {
+            error: constants.errorCodes.unknownError
+        }
+    }
+}
+
 module.exports = {
-    registerVendor
+    registerVendor,
+    loginVendor
 }

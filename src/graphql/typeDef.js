@@ -73,10 +73,10 @@ module.exports = gql`
         productName: String!
         productDescription: String!
         productParameters: String!
-        quantity: String!
+        quantity: Float!
         unit: String!
         termsAndConditions: String!
-        deliveryDays: String!
+        deliveryDays: Float!
     }
 
     """
@@ -136,12 +136,13 @@ module.exports = gql`
     type Mutation {
         #vendors
         registerVendor(userInput: registerVendorInput!): ErrorStateResponse!
+        loginVendor(userInput: loginInput!): AuthenticationResponse!
 
         #vendorProfiles
 
         #buyers
-        registerBuyer(userInput: registerBuyerInput): ErrorStateResponse!
-        loginBuyer(userInput: loginInput): AuthenticationResponse!
+        registerBuyer(userInput: registerBuyerInput!): ErrorStateResponse!
+        loginBuyer(userInput: loginInput!): AuthenticationResponse!
 
         #buyerProfiles
 
@@ -150,6 +151,7 @@ module.exports = gql`
 
         #itemOrders
         createItemOrders(userInput: createItemOrdersInput!): Boolean!
+        # buyerGetItemOrders(buyerId):
 
         #companies
         registerCompany(userInput: registerCompanyInput): AuthenticationResponse!

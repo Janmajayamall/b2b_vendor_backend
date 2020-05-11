@@ -29,6 +29,19 @@ async function createVendorProfile(clients, registrationObject, vendorId, compan
     }
 }
 
+async function getVendorProfile(clients, vendorId) {
+    const result = await clients.dynamodbClient
+        .get({
+            TableName: tableSchemas.vendorProfiles.tableName,
+            Key: {
+                id: vendorId
+            }
+        })
+        .promise()
+    return result
+}
+
 module.exports = {
-    createVendorProfile
+    createVendorProfile,
+    getVendorProfile
 }

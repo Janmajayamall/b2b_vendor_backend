@@ -9,6 +9,7 @@ async function createItemOrders(clients, queries, createOrdersInput, buyerId) {
     const batchItemOrdersWriteOperations = []
 
     createOrdersInput.items.forEach((element) => {
+        console.log(element)
         //adding the parameters by looping through object keys
         let productParameters = JSON.parse(element.productParameters)
         let productParametersOps = {}
@@ -23,17 +24,17 @@ async function createItemOrders(clients, queries, createOrdersInput, buyerId) {
             PutRequest: {
                 Item: {
                     id: uuidv4(),
-                    buyerId: buyerId.trim(),
+                    buyerId: buyerId,
                     buyerRfqId: element.buyerRfqId.trim(),
                     buyerPrId: element.buyerPrId.trim(),
                     buyerItemId: element.buyerItemId.trim(),
                     productName: element.productName.trim(),
                     productDescription: element.productDescription.trim(),
-                    quantity: parseFloat(element.quantity.trim()),
+                    quantity: element.quantity,
                     unit: element.unit.trim(),
                     termsAndConditions: element.termsAndConditions.trim(),
                     productParameters: productParametersOps,
-                    deliveryDays: parseFloat(element.deliveryDays.trim()),
+                    deliveryDays: element.deliveryDays,
                     buyerGroupId: buyerGroupId,
                     createdAt: new Date().getTime(),
                     lastModified: new Date().getTime(),

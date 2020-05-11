@@ -14,6 +14,17 @@ module.exports = {
 
             const result = await queries.dynamodbQueries.registerVendor(clients, queries, registerObject, companyId)
             return result
+        },
+
+        async loginVendor(parent, args, context) {
+            //extracting contexts
+            const { clients, queries, reqHeaders } = context
+
+            //TODO: validate the input
+            const loginObject = args.userInput
+
+            const result = await queries.dynamodbQueries.loginVendor(clients, queries, loginObject)
+            return result
         }
     },
 

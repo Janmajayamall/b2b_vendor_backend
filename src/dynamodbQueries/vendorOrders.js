@@ -31,7 +31,7 @@ async function bulkCreateVendorOrders(clients, itemOrdersReq, vendorIdsList) {
             operationItem.quotedQuantity = operationItem.quantity
             operationItem.quotedUnit = operationItem.unit
             operationItem.quotedDiscount = 0.0
-            operationIttem.quotedDeliveryCost = 0.0
+            operationItem.quotedDeliveryCost = 0.0
             operationItem.quotedLandingPrice = 0.0
             operationItem.quotedValidity = 0.0
             operationItem.quotedDeliveryDays = 0.0
@@ -56,6 +56,15 @@ async function bulkCreateVendorOrders(clients, itemOrdersReq, vendorIdsList) {
         await clients.dynamodbClient.batchWrite(batchWriteReq).promise()
     }
     return true
+}
+
+async function getVendorOrders(clients, vendorId) {
+    const result = await clients.dynamodbClient.get({
+        TableName: tableSchemas.vendorOrders.tableName,
+        Key: {
+            vendorId: vendorId
+        }
+    })
 }
 
 module.exports = {

@@ -7,7 +7,7 @@ async function getMatchedVendors(esClient, matchObject) {
     matchObject.products.forEach((element) => {
         matchPrefixesQuery.push({
             match_phrase_prefix: {
-                "products.SS": {
+                products: {
                     query: element
                 }
             }
@@ -17,7 +17,7 @@ async function getMatchedVendors(esClient, matchObject) {
     matchObject.categories.forEach((element) => {
         matchPrefixesQuery.push({
             match_phrase_prefix: {
-                "productsCategory.S": {
+                productsCategory: {
                     query: element
                 }
             }
@@ -28,7 +28,7 @@ async function getMatchedVendors(esClient, matchObject) {
         query: {
             bool: {
                 should: matchPrefixesQuery,
-                minimum_should_match: 2
+                minimum_should_match: 1
             }
         }
     }

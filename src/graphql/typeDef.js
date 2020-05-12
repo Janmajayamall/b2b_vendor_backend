@@ -57,9 +57,8 @@ module.exports = gql`
     Used for adding productsCategory & products array for the vendor
     """
     input addCategoryProductsInput {
-        vendorId: ID!
         productsCategory: String!
-        products: [String!]
+        products: [String!]!
     }
 
     """
@@ -133,7 +132,13 @@ module.exports = gql`
         error: String!
     }
 
-    type Mutation {
+    """
+    type VendorOrder
+    Used for defining response type of vendor order
+    """ # type VendorOrder{
+    type # }
+
+    Mutation {
         #vendors
         registerVendor(userInput: registerVendorInput!): ErrorStateResponse!
         loginVendor(userInput: loginInput!): AuthenticationResponse!
@@ -147,7 +152,7 @@ module.exports = gql`
         #buyerProfiles
 
         #vendorCategoryProducts
-        addCategoryProducts(userInput: addCategoryProductsInput!): Boolean!
+        addCategoryProducts(userInput: [addCategoryProductsInput!]!): Boolean!
 
         #itemOrders
         createItemOrders(userInput: createItemOrdersInput!): Boolean!
@@ -159,6 +164,9 @@ module.exports = gql`
 
         #companyProfiles
         createCompanyProfile(userInput: createCompanyProfileInput!): Boolean!
+
+        #vendorOrders
+        # getNewVendorOrders:[VendorOrder!]!
     }
 
     type Query {

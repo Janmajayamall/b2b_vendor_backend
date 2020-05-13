@@ -1,4 +1,5 @@
 module.exports = {
     ...require("./authentication"),
-    ...require("./constants")
+    ...require("./constants"),
+    ...require("./helpers")
 }

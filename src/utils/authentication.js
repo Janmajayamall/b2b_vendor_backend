@@ -31,12 +31,12 @@ async function verifyPasswordHash(hash, password) {
     }
 }
 
-async function issueJwt(id) {
+async function issueJwt(_id) {
     //days to expire
     const expires_in = "1d"
 
     const payload = {
-        sub: id,
+        sub: _id,
         iat: Date.now()
     }
 

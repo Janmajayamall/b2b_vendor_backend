@@ -29,6 +29,7 @@ module.exports = {
                 name, 
                 country, 
                 city, 
+                state //new
                 address, 
                 description,
                 locationCoordinates:{
@@ -352,16 +353,22 @@ module.exports = {
                 unit
                 termsAndConditions ,
                 deliveryDays
-                  
+                buyerGroupId,
+
+                //new
+                buyerCompanyId,
+                buyerCompanyCity,
+                buyerCompanyState,
+                
                 
                 //extra:
-                buyerGroupId,
                 createdAt,
                 lastModified,
                 status{
                     ACTIVE,
                     NOT_ACTIVE
-                }
+                } 
+                            
         } 
          */
     },
@@ -430,6 +437,15 @@ module.exports = {
                     REJECTED -> Buyers rejected vendor's quote
                     REVIEW -> Buyers is thinking of contacting
                     ACCEPTED -> Vendor has been selected for the item 
+                }
+
+                //new
+                vendorCompanyId,
+                vendorCompanyCity
+                vendorCompanyState,
+                vendorCompanyLocationCoordinates{
+                    lat,
+                    lon
                 }
 
                 //extra 

@@ -12,6 +12,7 @@ module.exports.constants = {
         emailDoesNotExists: "2",
         noError: "0",
         invalidCreds: "3",
+        profileAlreadyCreated: "4",
         unknownError: "1000"
     }
 }

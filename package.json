@@ -20,6 +20,7 @@
     "express": "^4.17.1",
     "http-aws-es": "^6.0.0",
     "jsonwebtoken": "^8.5.1",
+    "mongodb": "^3.5.7",
     "uuid": "^8.0.0"
   },
   "devDependencies": {

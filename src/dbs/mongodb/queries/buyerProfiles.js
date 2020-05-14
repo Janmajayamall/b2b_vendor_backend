@@ -3,7 +3,7 @@ const { ObjectID } = require("mongodb")
 async function createBuyerProfile(dbs, registrationObject, buyerId, companyId) {
     try {
         //check if profile already exists
-        const checkProfileRes = await dbs.mongoDb.client.collection(dbs.mongoDb.collections.buyerProfiles).findOne({
+        const checkProfileRes = await dbs.mainDb.client.collection(dbs.mainDb.collections.buyerProfiles).findOne({
             buyerId: ObjectID(buyerId)
         })
 
@@ -12,7 +12,7 @@ async function createBuyerProfile(dbs, registrationObject, buyerId, companyId) {
         }
 
         //create profile
-        const result = await dbs.mongoDb.client.collection(dbs.mongoDb.collections.buyerProfiles).insertOne({
+        const result = await dbs.mainDb.client.collection(dbs.mainDb.collections.buyerProfiles).insertOne({
             buyerId: ObjectID(buyerId),
             name: registrationObject.name.trim(),
             contactEmailId: registrationObject.contactEmailId.trim(),
@@ -25,13 +25,13 @@ async function createBuyerProfile(dbs, registrationObject, buyerId, companyId) {
 
         return true
     } catch (e) {
-        console.log("createBuyerProfile mongoDb buyerProfile.js error: ", e)
+        console.log("createBuyerProfile mainDb buyerProfile.js error: ", e)
         return false
     }
 }
 
 async function getBuyerProfile(dbs, buyerId) {
-    const result = await dbs.mongoDb.client.collection(dbs.mongoDb.collections.buyerProfiles).findOne({
+    const result = await dbs.mainDb.client.collection(dbs.mainDb.collections.buyerProfiles).findOne({
         buyerId: ObjectID(buyerId)
     })
     return result

@@ -3,7 +3,7 @@ import { constants } from "./../../../utils/index"
 
 async function createCompanyProfile(dbs, registrationObject, companyId) {
     //check whether company profile with companyId exists or not
-    const checkProfileRes = await dbs.mongoDb.client.collection(dbs.mongoDb.collections.companyProfiles).findOne({
+    const checkProfileRes = await dbs.mainDb.client.collection(dbs.mainDb.collections.companyProfiles).findOne({
         companyId: ObjectID(companyId)
     })
 
@@ -15,7 +15,7 @@ async function createCompanyProfile(dbs, registrationObject, companyId) {
     }
 
     //create the profile
-    const result = await dbs.mongoDb.client.collection(dbs.mongoDb.collections.companyProfiles).insertOne({
+    const result = await dbs.mainDb.client.collection(dbs.mainDb.collections.companyProfiles).insertOne({
         companyId: ObjectID(companyId),
         name: registrationObject.name.trim(),
         country: registrationObject.country.trim(),
@@ -37,7 +37,7 @@ async function createCompanyProfile(dbs, registrationObject, companyId) {
 }
 
 async function getCompanyProfile(dbs, companyId) {
-    const result = await dbs.mongoDb.client.collection(dbs.mongoDb.collections.companyProfiles).findOne({
+    const result = await dbs.mainDb.client.collection(dbs.mainDb.collections.companyProfiles).findOne({
         companyId: ObjectID(companyId)
     })
 

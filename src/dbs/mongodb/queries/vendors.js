@@ -7,9 +7,9 @@ const {
 } = require("./../../../utils/index")
 const { ObjectID } = require("mongodb")
 
-async function registerVendor(dbs, mongoDbQueries, registrationObject, companyId) {
+async function registerVendor(dbs, queries, registrationObject, companyId) {
     //checking whether email exists or not
-    const emailCheckRes = await dbs.mongoDb.client.collection(dbs.mongoDb.collections.vendors).findOne({
+    const emailCheckRes = await dbs.mainDb.client.collection(dbs.mainDb.collections.vendors).findOne({
         emailId: registrationObject.emailId.trim().toLowerCase()
     })
 
@@ -22,7 +22,7 @@ async function registerVendor(dbs, mongoDbQueries, registrationObject, companyId
 
     //register vendor
     const passwordHash = await generatePasswordHash(registrationObject.password.trim())
-    let result = await dbs.mongoDb.client.collection(dbs.mongoDb.collections.vendors).insertOne({
+    let result = await dbs.mainDb.client.collection(dbs.mainDb.collections.vendors).insertOne({
         emailId: registrationObject.emailId.trim().toLowerCase(),
         passwordHash: passwordHash,
         companyId: ObjectID(companyId),
@@ -33,7 +33,12 @@ async function registerVendor(dbs, mongoDbQueries, registrationObject, companyId
     result = getInsertOneResult(result)
 
     //create vendor Profile
-    const profileCreateRes = await mongoDbQueries.createVendorProfile(dbs, registrationObject, result._id, companyId)
+    const profileCreateRes = await queries.mongoDbQueries.createVendorProfile(
+        dbs,
+        registrationObject,
+        result._id,
+        companyId
+    )
 
     if (profileCreateRes === false) {
         console.log("Error in creating vendor profile on vendor account sign up")
@@ -44,9 +49,9 @@ async function registerVendor(dbs, mongoDbQueries, registrationObject, companyId
     }
 }
 
-async function loginVendor(dbs, mongoDbQueries, loginObject) {
+async function loginVendor(dbs, queries, loginObject) {
     //get the company account
-    const result = await dbs.mongoDb.client.collection(dbs.mongoDb.collections.vendors).findOne({
+    const result = await dbs.mainDb.client.collection(dbs.mainDb.collections.vendors).findOne({
         emailId: loginObject.emailId.trim().toLowerCase()
     })
 
@@ -64,7 +69,7 @@ async function loginVendor(dbs, mongoDbQueries, loginObject) {
         const jwt = await issueJwt(result._id)
 
         //TODO: check whether profile of the vendor exists or not
-        const profileExists = await mongoDbQueries.getVendorProfile(dbs, result._id)
+        const profileExists = await queries.mongoDbQueries.getVendorProfile(dbs, result._id)
 
         return {
             jwt: jwt,

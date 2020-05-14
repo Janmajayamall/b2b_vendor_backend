@@ -8,7 +8,7 @@ const {
 
 async function registerCompany(dbs, registrationObject) {
     //checking whether emailId already exists or not
-    const emailCheckRes = await dbs.mongoDb.client.collection(dbs.mongoDb.collections.companies).findOne({
+    const emailCheckRes = await dbs.mainDb.client.collection(dbs.mainDb.collections.companies).findOne({
         emailId: registrationObject.emailId.trim().toLowerCase()
     })
 
@@ -21,7 +21,7 @@ async function registerCompany(dbs, registrationObject) {
 
     const passwordHash = await generatePasswordHash(registrationObject.password.trim())
     //registering the company
-    let result = await dbs.mongoDb.client.collection(dbs.mongoDb.collections.companies).insertOne({
+    let result = await dbs.mainDb.client.collection(dbs.mainDb.collections.companies).insertOne({
         emailId: registrationObject.emailId.trim().toLowerCase(),
         passwordHash: passwordHash,
         createdAt: new Date(),
@@ -39,9 +39,9 @@ async function registerCompany(dbs, registrationObject) {
     }
 }
 
-async function loginCompany(dbs, mongoDbQueries, loginObject) {
+async function loginCompany(dbs, queries, loginObject) {
     //get the company account
-    const result = await dbs.mongoDb.client.collection(dbs.mongoDb.collections.companies).findOne({
+    const result = await dbs.mainDb.client.collection(dbs.mainDb.collections.companies).findOne({
         emailId: loginObject.emailId.trim().toLowerCase()
     })
 
@@ -59,7 +59,7 @@ async function loginCompany(dbs, mongoDbQueries, loginObject) {
         const jwt = await issueJwt(result._id)
 
         //TODO: check whether profile of the company exists or not
-        const profileExists = await mongoDbQueries.getCompanyProfile(dbs, result._id)
+        const profileExists = await queries.mongoDbQueries.getCompanyProfile(dbs, result._id)
 
         return {
             jwt: jwt,

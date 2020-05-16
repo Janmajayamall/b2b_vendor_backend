@@ -28,7 +28,7 @@ async function registerCompany(dbs, registrationObject) {
         lastModified: new Date(),
         status: "ACTIVE"
     })
-    let result = getInsertOneResult(result)
+    result = getInsertOneResult(result)
 
     const jwt = await issueJwt(result._id)
 

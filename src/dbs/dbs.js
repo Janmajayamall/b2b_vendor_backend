@@ -2,7 +2,7 @@ module.exports = {
     mainDb: {
         name: "mainDb",
         collections: {
-            companyProfile: "company_profile",
+            companyProfiles: "company_profiles",
             companies: "companies",
             vendors: "vendors",
             vendorProfiles: "vendor_profiles",

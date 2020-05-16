@@ -6,6 +6,7 @@ const buyers = require("./buyers")
 const buyerProfiles = require("./buyerProfiles")
 const companies = require("./companies")
 const companyProfiles = require("./companyProfiles")
+const vendorOrders = require("./vendorOrders")
 
 module.exports = {
     Mutation: {
@@ -20,6 +21,7 @@ module.exports = {
     },
 
     Query: {
-        ...vendors.Query
+        ...vendors.Query,
+        ...vendorOrders.Query
     }
 }

@@ -1,5 +1,5 @@
 async function createCompanyProfiles(mainDb) {
-    var result = await mainDb.client.createCollection(mainDb.collections.companyProfile, {
+    var result = await mainDb.client.createCollection(mainDb.collections.companyProfiles, {
         validator: {
             $jsonSchema: {
                 bsonType: "object",
@@ -93,7 +93,7 @@ async function createCompanies(mainDb) {
         validator: {
             $jsonSchema: {
                 bsonType: "object",
-                required: ["email", "passwordHash", "createdAt", "lastModified", "status"],
+                required: ["emailId", "passwordHash", "createdAt", "lastModified", "status"],
                 properties: {
                     emailId: {
                         bsonType: "string",
@@ -127,7 +127,7 @@ async function createVendors(mainDb) {
         validator: {
             $jsonSchema: {
                 bsonType: "object",
-                required: ["email", "passwordHash", "createdAt", "lastModified", "status", "companyId"],
+                required: ["emailId", "passwordHash", "createdAt", "lastModified", "status", "companyId"],
                 properties: {
                     emailId: {
                         bsonType: "string",
@@ -220,7 +220,7 @@ async function createBuyers(mainDb) {
         validator: {
             $jsonSchema: {
                 bsonType: "object",
-                required: ["email", "passwordHash", "createdAt", "lastModified", "status", "companyId"],
+                required: ["emailId", "passwordHash", "createdAt", "lastModified", "status", "companyId"],
                 properties: {
                     emailId: {
                         bsonType: "string",
@@ -365,6 +365,7 @@ async function createItemOrders(mainDb) {
                 bsonType: "object",
                 required: [
                     "buyerId",
+                    "buyerName",
                     "buyerRfqId",
                     "buyerPrId",
                     "buyerItemId",
@@ -389,6 +390,10 @@ async function createItemOrders(mainDb) {
                 properties: {
                     buyerId: {
                         bsonType: "objectId",
+                        description: "required"
+                    },
+                    buyerName: {
+                        bsonType: "string",
                         description: "required"
                     },
                     buyerRfqId: {
@@ -416,7 +421,7 @@ async function createItemOrders(mainDb) {
                         description: "required"
                     },
                     quantity: {
-                        bsonType: "decimal",
+                        bsonType: "double",
                         description: "required"
                     },
                     unit: {
@@ -428,7 +433,7 @@ async function createItemOrders(mainDb) {
                         description: "required"
                     },
                     deliveryDays: {
-                        bsonType: "decimal",
+                        bsonType: "double",
                         description: "required"
                     },
                     buyerGroupId: {
@@ -487,14 +492,24 @@ async function createVendorOrders(mainDb) {
                     "vendorId",
                     "orderId",
 
+                    //buyer's input
                     "productName",
                     "productDescription",
                     "productParameters",
                     "quantity",
                     "unit",
                     "termsAndConditions",
+                    "deliveryDays",
                     "buyerId",
+                    "buyerName",
+                    "companyId",
+                    "companyName",
+                    "companyCity",
+                    "companyState",
+                    "companyLocationCoordinates",
+                    "companyCountry",
 
+                    //vendor's input
                     "quotedProductName",
                     "quotedProductDescription",
                     "quotedProductParameters",
@@ -506,7 +521,10 @@ async function createVendorOrders(mainDb) {
                     "quotedLandingPrice",
                     "quotedValidity",
                     "quotedDeliveryDays",
+                    "quotedTermsAndConditions",
                     "status",
+                    "vendorName",
+                    //vendor's company
                     "vendorCompanyName",
                     "vendorCompanyId",
                     "vendorCompanyCity",
@@ -540,7 +558,7 @@ async function createVendorOrders(mainDb) {
                         description: "required"
                     },
                     quantity: {
-                        bsonType: "decimal",
+                        bsonType: "double",
                         description: "required"
                     },
                     unit: {
@@ -551,8 +569,40 @@ async function createVendorOrders(mainDb) {
                         bsonType: "string",
                         description: "required"
                     },
+                    deliveryDays: {
+                        bsonType: "double",
+                        description: "required"
+                    },
                     buyerId: {
-                        bsonType: "object",
+                        bsonType: "objectId",
+                        description: "required"
+                    },
+                    buyerName: {
+                        bsonType: "string",
+                        description: "required"
+                    },
+                    companyId: {
+                        bsonType: "objectId",
+                        description: "required"
+                    },
+                    companyName: {
+                        bsonType: "string",
+                        description: "required"
+                    },
+                    companyCity: {
+                        bsonType: "string",
+                        description: "required"
+                    },
+                    companyState: {
+                        bsonType: "string",
+                        description: "required"
+                    },
+                    companyLocationCoordinates: {
+                        bsonType: "array",
+                        description: "required"
+                    },
+                    companyCountry: {
+                        bsonType: "string",
                         description: "required"
                     },
 
@@ -566,46 +616,53 @@ async function createVendorOrders(mainDb) {
                         description: "required"
                     },
                     quotedProductParameters: {
-                        bsonType: "string",
+                        bsonType: "object",
                         description: "required"
                     },
                     quotedPricePerUnit: {
-                        bsonType: "string",
+                        bsonType: "double",
                         description: "required"
                     },
                     quotedQuantity: {
-                        bsonType: "decimal",
+                        bsonType: "double",
                         description: "required"
                     },
                     quotedUnit: {
-                        bsonType: "decimal",
+                        bsonType: "string",
                         description: "required"
                     },
                     quotedDiscount: {
-                        bsonType: "decimal",
+                        bsonType: "double",
                         description: "required"
                     },
                     quotedDeliveryCost: {
-                        bsonType: "decimal",
+                        bsonType: "double",
                         description: "required"
                     },
                     quotedLandingPrice: {
-                        bsonType: "decimal",
+                        bsonType: "double",
                         description: "required"
                     },
                     quotedValidity: {
-                        bsonType: "decimal",
+                        bsonType: "double",
                         description: "required"
                     },
                     quotedDeliveryDays: {
-                        bsonType: "decimal",
+                        bsonType: "double",
+                        description: "required"
+                    },
+                    quotedTermsAndConditions: {
+                        bsonType: "string",
                         description: "required"
                     },
                     status: {
                         bsonType: "string",
                         description: "required"
                     },
-
+                    vendorName: {
+                        bsonType: "string",
+                        description: "required"
+                    },
                     //vendor's company
                     vendorCompanyName: {
                         bsonType: "string",
@@ -629,11 +686,11 @@ async function createVendorOrders(mainDb) {
                     },
 
                     createdAt: {
-                        bsonType: "string",
+                        bsonType: "date",
                         description: "required"
                     },
                     lastModified: {
-                        bsonType: "string",
+                        bsonType: "date",
                         description: "required"
                     }
                 }
@@ -774,6 +831,7 @@ module.exports = {
 /** itemOrders
         attributes: 
             buyerId,
+            buyerName,
             buyerRfqId
             buyerPrId
             buyerItemId
@@ -785,6 +843,7 @@ module.exports = {
             termsAndConditions ,
             deliveryDays
             buyerGroupId,
+            
             companyId,
             companyName,
             companyCity,
@@ -814,6 +873,13 @@ module.exports = {
             unit
             termsAndConditions,
             buyerId
+            companyId,
+            companyName,
+            companyCity,
+            companyState,
+            companyLocationCoordinates{},
+            companyCountry
+
 
             //from vendor
             quotedProductName
@@ -836,6 +902,7 @@ module.exports = {
                 ACCEPTED -> Vendor has been selected for the item 
             }
 
+            vendorName
             vendorCompanyName
             vendorCompanyId,
             vendorCompanyCity

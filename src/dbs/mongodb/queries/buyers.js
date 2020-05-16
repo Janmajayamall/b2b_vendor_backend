@@ -61,7 +61,7 @@ async function loginBuyer(dbs, queries, loginObject) {
             error: constants.errorCodes.emailDoesNotExists
         }
     }
-
+    console.log(result, "login buyer")
     //verify the password
     const passwordVeriRes = await verifyPasswordHash(result.passwordHash, loginObject.password.trim())
     if (passwordVeriRes === true) {

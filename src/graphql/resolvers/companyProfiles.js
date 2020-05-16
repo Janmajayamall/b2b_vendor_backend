@@ -4,7 +4,7 @@ module.exports = {
     Mutation: {
         async createCompanyProfile(parent, args, context) {
             //extracting contexts
-            const { clients, queries, reqHeaders } = context
+            const { dbs, queries, reqHeaders } = context
 
             //authenticate request
             const companyId = await verifyJwt(reqHeaders.authorization)
@@ -12,7 +12,7 @@ module.exports = {
             //TODO: validate the input
             const registerObject = args.userInput
 
-            const result = await queries.dynamodbQueries.createCompanyProfile(clients, registerObject, companyId)
+            const result = await queries.mongoDbQueries.createCompanyProfile(dbs, registerObject, companyId)
             return result
         }
     }

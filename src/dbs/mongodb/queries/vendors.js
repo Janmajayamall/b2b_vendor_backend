@@ -8,6 +8,7 @@ const {
 const { ObjectID } = require("mongodb")
 
 async function registerVendor(dbs, queries, registrationObject, companyId) {
+    console.log(registrationObject, companyId)
     //checking whether email exists or not
     const emailCheckRes = await dbs.mainDb.client.collection(dbs.mainDb.collections.vendors).findOne({
         emailId: registrationObject.emailId.trim().toLowerCase()

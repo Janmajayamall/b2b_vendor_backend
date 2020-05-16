@@ -105,6 +105,7 @@ module.exports = gql`
         name: String!
         country: String!
         city: String!
+        state: String!
         address: String!
         description: String!
         locationCoordinates: locationCoordinates!
@@ -133,12 +134,32 @@ module.exports = gql`
     }
 
     """
-    type VendorOrder
-    Used for defining response type of vendor order
-    """ # type VendorOrder{
-    type # }
+    type VendorOrderSimple
+    Used for defining response type of vendor order when showing
+    all orders in a form of list
+    """
+    type VendorOrderSimple {
+        vendorId: ID!
+        orderId: ID!
 
-    Mutation {
+        # buyer's input
+        productName: String!
+        productDescription: String!
+        quantity: Float!
+        unit: String!
+        termsAndConditions: String!
+        deliveryDays: Float!
+        buyerId: ID!
+        buyerName: String!
+        companyId: ID!
+        companyName: String!
+        companyCity: String!
+        companyState: String!
+        companyLocationCoordinates: [Float!]!
+        companyCountry: String!
+    }
+
+    type Mutation {
         #vendors
         registerVendor(userInput: registerVendorInput!): ErrorStateResponse!
         loginVendor(userInput: loginInput!): AuthenticationResponse!
@@ -163,13 +184,13 @@ module.exports = gql`
         loginCompany(userInput: registerCompanyInput): AuthenticationResponse!
 
         #companyProfiles
-        createCompanyProfile(userInput: createCompanyProfileInput!): Boolean!
-
-        #vendorOrders
-        # getNewVendorOrders:[VendorOrder!]!
+        createCompanyProfile(userInput: createCompanyProfileInput!): ErrorStateResponse!
     }
 
     type Query {
         s: Boolean!
+
+        #vendorOrders
+        getIncomingVendorOrders: [VendorOrderSimple!]!
     }
 `

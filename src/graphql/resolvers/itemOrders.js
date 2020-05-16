@@ -4,16 +4,16 @@ module.exports = {
     Mutation: {
         async createItemOrders(parent, args, context) {
             //extracting contexts
-            const { clients, queries, reqHeaders } = context
+            const { dbs, queries, reqHeaders } = context
 
-            //authenticate the buyer
+            // authenticate the buyer
             const buyerId = await verifyJwt(reqHeaders.authorization)
 
             //TODO: validate the input
             const createOrdersInput = args.userInput
 
             //creating orders for all the items
-            const result = await queries.dynamodbQueries.createItemOrders(clients, queries, createOrdersInput, buyerId)
+            const result = await queries.mongoDbQueries.createItemOrders(dbs, queries, createOrdersInput, buyerId)
             return result
         }
     }

@@ -1,5 +1,5 @@
-import { ObjectID } from "mongodb"
-import { constants } from "./../../../utils/index"
+const { ObjectID } = require("mongodb")
+const { constants } = require("./../../../utils/index")
 
 async function createCompanyProfile(dbs, registrationObject, companyId) {
     //check whether company profile with companyId exists or not
@@ -13,6 +13,8 @@ async function createCompanyProfile(dbs, registrationObject, companyId) {
             error: constants.errorCodes.profileAlreadyCreated
         }
     }
+
+    console.log(registrationObject)
 
     //create the profile
     const result = await dbs.mainDb.client.collection(dbs.mainDb.collections.companyProfiles).insertOne({
@@ -33,7 +35,9 @@ async function createCompanyProfile(dbs, registrationObject, companyId) {
         status: "ACTIVE"
     })
 
-    return true
+    return {
+        error: constants.errorCodes.noError
+    }
 }
 
 async function getCompanyProfile(dbs, companyId) {

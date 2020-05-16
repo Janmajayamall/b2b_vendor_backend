@@ -4,7 +4,7 @@ module.exports = {
     Mutation: {
         async addCategoryProducts(parent, args, context) {
             //extracting contexts
-            const { clients, queries, reqHeaders } = context
+            const { dbs, queries, reqHeaders } = context
 
             //authenticate the user
             const vendorId = await verifyJwt(reqHeaders.authorization)
@@ -12,7 +12,7 @@ module.exports = {
             //TODO: validate the input
             const addObjectArr = args.userInput
 
-            const result = await queries.dynamodbQueries.addCategoryProducts(clients, addObjectArr, vendorId)
+            const result = await queries.mongoDbQueries.addCategoryProducts(dbs, queries, addObjectArr, vendorId)
             return result
         }
     }

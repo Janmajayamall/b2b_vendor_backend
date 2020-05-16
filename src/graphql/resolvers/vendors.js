@@ -4,7 +4,7 @@ module.exports = {
     Mutation: {
         async registerVendor(parent, args, context) {
             //extracting contexts
-            const { clients, queries, reqHeaders } = context
+            const { dbs, queries, reqHeaders } = context
 
             //authenticate the user
             const companyId = await verifyJwt(reqHeaders.authorization)
@@ -12,18 +12,18 @@ module.exports = {
             //TODO: validate the input
             const registerObject = args.userInput
 
-            const result = await queries.dynamodbQueries.registerVendor(clients, queries, registerObject, companyId)
+            const result = await queries.mongoDbQueries.registerVendor(dbs, queries, registerObject, companyId)
             return result
         },
 
         async loginVendor(parent, args, context) {
             //extracting contexts
-            const { clients, queries, reqHeaders } = context
+            const { dbs, queries, reqHeaders } = context
 
             //TODO: validate the input
             const loginObject = args.userInput
 
-            const result = await queries.dynamodbQueries.loginVendor(clients, queries, loginObject)
+            const result = await queries.mongoDbQueries.loginVendor(dbs, queries, loginObject)
             return result
         }
     },

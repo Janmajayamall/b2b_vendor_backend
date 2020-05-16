@@ -3,7 +3,7 @@ const { constants } = require("./../../../utils/index")
 async function createVendorProfile(dbs, registrationObject, vendorId, companyId) {
     try {
         //check if profile already exists
-        const checkProfileRes = await dbs.mongoDb.client.collection(dbs.mongoDb.collections.vendorProfiles).findOne({
+        const checkProfileRes = await dbs.mainDb.client.collection(dbs.mainDb.collections.vendorProfiles).findOne({
             vendorId: ObjectID(vendorId)
         })
 
@@ -12,7 +12,7 @@ async function createVendorProfile(dbs, registrationObject, vendorId, companyId)
         }
 
         //create profile
-        const result = await dbs.mongoDb.client.collection(dbs.mongoDb.collections.vendorProfiles).insertOne({
+        const result = await dbs.mainDb.client.collection(dbs.mainDb.collections.vendorProfiles).insertOne({
             vendorId: ObjectID(vendorId),
             name: registrationObject.name.trim(),
             contactEmailId: registrationObject.contactEmailId.trim(),
@@ -31,7 +31,7 @@ async function createVendorProfile(dbs, registrationObject, vendorId, companyId)
 }
 
 async function getVendorProfile(dbs, vendorId) {
-    const result = await dbs.mongoDb.client.collection(dbs.mongoDb.collections.vendorProfiles).findOne({
+    const result = await dbs.mainDb.client.collection(dbs.mainDb.collections.vendorProfiles).findOne({
         vendorId: ObjectID(vendorId)
     })
     return result

@@ -3,7 +3,6 @@ const tableSchemas = require("./../../tableSchemas")
 const { generatePasswordHash, constants, issueJwt, verifyPasswordHash } = require("./../utils/index")
 
 async function registerBuyer(clients, queries, registrationObject, companyId) {
-    console.log(registrationObject, companyId, "this")
     const passwordHash = await generatePasswordHash(registrationObject.password.trim())
     const buyerId = uuidv4()
     const item = {

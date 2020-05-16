@@ -4,14 +4,16 @@ const typeDefs = require("./src/graphql/typeDef")
 const resolvers = require("./src/graphql/resolvers/index")
 const AWS = require("aws-sdk")
 const dynamodbQueries = require("./src/dynamodbQueries/index")
-const esQueries = require("./src/elasticSearchQueries/index")
+const esQueries = require("./src/dbs/es/queries/index")
 const initializingMongodb = require("./src/dbs/mongodb/mongoDbConnections")
 const dbs = require("./src/dbs/dbs")
 const mainDbCollections = require("./src/dbs/mongodb/schema/mainDbCollections")
+const mongoDbQueries = require("./src/dbs/mongodb/queries/index")
+
 let mongoDbConnections = null
 
 //create table indicator
-let createMongodbTables = false //Change this if you want to create tables
+let createMongodbTables = true //Change this if you want to create tables
 
 //Initializing mongodb connections
 initializingMongodb
@@ -58,6 +60,7 @@ let options = {
     }),
     httpOptions: {} // set httpOptions on aws-sdk's request. default to aws-sdk's config.httpOptions
 }
+
 const esClient = require("elasticsearch").Client(options)
 //assigning esClient to es
 dbs.es.client = esClient
@@ -75,7 +78,7 @@ const server = new ApolloServer({
 
             //queries
             queries: {
-                // mongoDbQueries: mongoDbQueries,
+                mongoDbQueries: mongoDbQueries,
                 dynamodbQueries: dynamodbQueries,
                 esQueries: esQueries
             }

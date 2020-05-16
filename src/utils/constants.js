@@ -14,6 +14,11 @@ module.exports.constants = {
         invalidCreds: "3",
         profileAlreadyCreated: "4",
         unknownError: "1000"
+    },
+    esEvents: {
+        create: "CREATE",
+        update: "UPDATE",
+        delete: "DELETE"
     }
 }
 

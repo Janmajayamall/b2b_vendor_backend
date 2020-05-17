@@ -433,7 +433,7 @@ async function createItemOrders(mainDb) {
                         description: "required"
                     },
                     deliveryDays: {
-                        bsonType: "double",
+                        bsonType: "string",
                         description: "required"
                     },
                     buyerGroupId: {
@@ -515,10 +515,12 @@ async function createVendorOrders(mainDb) {
                     "quotedProductParameters",
                     "quotedPricePerUnit",
                     "quotedQuantity",
+                    "quotedQuantityPrice",
                     "quotedUnit",
                     "quotedDiscount",
                     "quotedDeliveryCost",
                     "quotedLandingPrice",
+                    "quotedPriceCurrency",
                     "quotedValidity",
                     "quotedDeliveryDays",
                     "quotedTermsAndConditions",
@@ -570,7 +572,7 @@ async function createVendorOrders(mainDb) {
                         description: "required"
                     },
                     deliveryDays: {
-                        bsonType: "double",
+                        bsonType: "string",
                         description: "required"
                     },
                     buyerId: {
@@ -623,6 +625,10 @@ async function createVendorOrders(mainDb) {
                         bsonType: "double",
                         description: "required"
                     },
+                    quotedQuantityPrice: {
+                        bsonType: "double",
+                        description: "required"
+                    },
                     quotedQuantity: {
                         bsonType: "double",
                         description: "required"
@@ -643,12 +649,16 @@ async function createVendorOrders(mainDb) {
                         bsonType: "double",
                         description: "required"
                     },
+                    quotedPriceCurrency: {
+                        bsonType: "string",
+                        description: "required"
+                    },
                     quotedValidity: {
                         bsonType: "double",
                         description: "required"
                     },
                     quotedDeliveryDays: {
-                        bsonType: "double",
+                        bsonType: "string",
                         description: "required"
                     },
                     quotedTermsAndConditions: {

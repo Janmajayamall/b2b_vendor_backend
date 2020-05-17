@@ -38,7 +38,7 @@ async function createItemOrders(dbs, queries, createOrdersInput, buyerId) {
             unit: element.unit.trim(),
             termsAndConditions: element.termsAndConditions.trim(),
             productParameters: JSON.parse(element.productParameters),
-            deliveryDays: Double(element.deliveryDays),
+            deliveryDays: element.deliveryDays.trim(),
             buyerGroupId: buyerGroupId,
             companyId: ObjectID(buyerProfileObject.companyId),
             companyName: companyProfileObject.name,
@@ -51,7 +51,7 @@ async function createItemOrders(dbs, queries, createOrdersInput, buyerId) {
             status: "ACTIVE"
         })
     })
-
+    console.log(insertManyOps)
     //insert Many request
     let result = await dbs.mainDb.client.collection(dbs.mainDb.collections.itemOrders).insertMany(insertManyOps)
     result = result.ops
@@ -67,7 +67,7 @@ async function createItemOrders(dbs, queries, createOrdersInput, buyerId) {
     esRes.hits.hits.forEach((hit) => {
         vendors.push(hit._source)
     })
-
+    console.log(vendors)
     //bulk generate vendor orders
     try {
         queries.mongoDbQueries.bulkCreateVendorOrders(dbs, result, vendors)
@@ -78,8 +78,30 @@ async function createItemOrders(dbs, queries, createOrdersInput, buyerId) {
     return true
 }
 
+async function buyerGetActiveItemOrders(dbs, buyerId) {
+    const result = await dbs.mainDb.client
+        .collection(dbs.mainDb.collections.itemOrders)
+        .find({
+            buyerId: ObjectID(buyerId),
+            status: "ACTIVE"
+        })
+        .toArray()
+
+    //formatting response
+    const formattedResponse = []
+    result.forEach((element) => {
+        formattedResponse.push({
+            ...element,
+            productParameters: JSON.stringify(element.productParameters)
+        })
+    })
+
+    return formattedResponse
+}
+
 module.exports = {
-    createItemOrders
+    createItemOrders,
+    buyerGetActiveItemOrders
 }
 
 // {

@@ -17,11 +17,13 @@ module.exports = {
         ...buyerProfiles.Mutation,
         ...buyers.Mutation,
         ...companies.Mutation,
-        ...companyProfiles.Mutation
+        ...companyProfiles.Mutation,
+        ...vendorOrders.Mutation
     },
 
     Query: {
         ...vendors.Query,
-        ...vendorOrders.Query
+        ...vendorOrders.Query,
+        ...itemOrders.Query
     }
 }

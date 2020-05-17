@@ -47,6 +47,10 @@ async function issueJwt(_id) {
 
 async function verifyJwt(jwt) {
     try {
+        if (!jwt) {
+            throw new AuthenticationError(`JWT should in format "Bearer [token]"`)
+        }
+
         const token = jwt.split(" ")[1].trim()
 
         if (!token) {

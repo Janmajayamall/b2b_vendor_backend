@@ -75,7 +75,7 @@ module.exports = gql`
         quantity: Float!
         unit: String!
         termsAndConditions: String!
-        deliveryDays: Float!
+        deliveryDays: String!
     }
 
     """
@@ -86,6 +86,30 @@ module.exports = gql`
         categories: [String!]!
         products: [String!]!
         items: [itemInput!]!
+    }
+
+    """
+    type BuyerItemOrder
+    Used for displaying buyer's item order details
+    """
+    type BuyerItemOrder {
+        _id: ID!
+        buyerId: ID!
+        buyerName: String!
+        buyerRfqId: String!
+        buyerPrId: String!
+        buyerItemId: String!
+        productName: String!
+        productDescription: String!
+        productParameters: String!
+        quantity: Float!
+        unit: String!
+        termsAndConditions: String!
+        deliveryDays: String!
+        buyerGroupId: String!
+        createdAt: String!
+        lastModified: String!
+        status: String!
     }
 
     """
@@ -148,7 +172,7 @@ module.exports = gql`
         quantity: Float!
         unit: String!
         termsAndConditions: String!
-        deliveryDays: Float!
+        deliveryDays: String!
         buyerId: ID!
         buyerName: String!
         companyId: ID!
@@ -157,6 +181,89 @@ module.exports = gql`
         companyState: String!
         companyLocationCoordinates: [Float!]!
         companyCountry: String!
+    }
+
+    """
+    type VendorOrderDetails
+    Used for defining response type of vendor order when showing
+    order in detail
+    """
+    type VendorOrderDetails {
+        vendorId: ID!
+        orderId: ID!
+
+        # buyer's input
+        productName: String!
+        productDescription: String!
+        quantity: Float!
+        unit: String!
+        termsAndConditions: String!
+        productParameters: String!
+        deliveryDays: String!
+        buyerId: ID!
+        buyerName: String!
+        companyId: ID!
+        companyName: String!
+        companyCity: String!
+        companyState: String!
+        companyLocationCoordinates: [Float!]!
+        companyCountry: String!
+
+        # vendor's input
+        quotedProductName: String!
+        quotedProductDescription: String!
+        quotedProductParameters: String!
+        quotedPricePerUnit: Float!
+        quotedQuantityPrice: Float!
+        quotedQuantity: Float!
+        quotedUnit: String!
+        quotedDiscount: Float!
+        quotedDeliveryCost: Float!
+        quotedLandingPrice: Float!
+        quotedPriceCurrency: String!
+        quotedValidity: Float!
+        quotedDeliveryDays: String!
+        quotedTermsAndConditions: String!
+        status: String!
+
+        # vendor's company
+        vendorName: String!
+        vendorCompanyName: String!
+        vendorCompanyId: ID!
+        vendorCompanyCity: String!
+        vendorCompanyState: String!
+        vendorCompanyLocationCoordinates: [Float!]
+
+        createdAt: String!
+        lastModified: String!
+    }
+
+    """
+    input updateVendorOrderDetails
+    used for updating vendor order details
+    used in scenarios like user submitting quotation
+    user editing it & rest
+    """
+    input updateVendorOrderDetailsInput {
+        quotedProductName: String
+        quotedProductDescription: String
+        quotedProductParameters: String
+        quotedPricePerUnit: Float
+        quotedQuantityPrice: Float
+        quotedQuantity: Float
+        quotedUnit: String
+        quotedDiscount: Float
+        quotedDeliveryCost: Float
+        quotedLandingPrice: Float
+        quotedPriceCurrency: String
+        quotedValidity: Float
+        quotedDeliveryDays: String
+        quotedTermsAndConditions: String
+    }
+
+    type ItemOrderDetailsResponse {
+        error: String!
+        itemOrder: VendorOrderDetails
     }
 
     type Mutation {
@@ -177,7 +284,10 @@ module.exports = gql`
 
         #itemOrders
         createItemOrders(userInput: createItemOrdersInput!): Boolean!
-        # buyerGetItemOrders(buyerId):
+
+        #vendorOrders
+        updateVendorOrderDetails(orderId: ID!, userInput: updateVendorOrderDetailsInput!): ErrorStateResponse!
+        rejectItemOrder(orderId: ID!): Boolean!
 
         #companies
         registerCompany(userInput: registerCompanyInput): AuthenticationResponse!
@@ -192,5 +302,9 @@ module.exports = gql`
 
         #vendorOrders
         getIncomingVendorOrders: [VendorOrderSimple!]!
+        getItemOrderDetails(orderId: ID!): ItemOrderDetailsResponse!
+
+        #itemOrders
+        buyerGetActiveItemOrders: [BuyerItemOrder!]!
     }
 `

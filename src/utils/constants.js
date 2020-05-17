@@ -13,6 +13,7 @@ module.exports.constants = {
         noError: "0",
         invalidCreds: "3",
         profileAlreadyCreated: "4",
+        recordNotFound: "5",
         unknownError: "1000"
     },
     esEvents: {

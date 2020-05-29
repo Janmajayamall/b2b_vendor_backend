@@ -3,7 +3,6 @@ const { ApolloServer, gql } = require("apollo-server-express")
 const typeDefs = require("./src/graphql/typeDef")
 const resolvers = require("./src/graphql/resolvers/index")
 const AWS = require("aws-sdk")
-const dynamodbQueries = require("./src/dynamodbQueries/index")
 const esQueries = require("./src/dbs/es/queries/index")
 const initializingMongodb = require("./src/dbs/mongodb/mongoDbConnections")
 const dbs = require("./src/dbs/dbs")
@@ -79,7 +78,6 @@ const server = new ApolloServer({
             //queries
             queries: {
                 mongoDbQueries: mongoDbQueries,
-                dynamodbQueries: dynamodbQueries,
                 esQueries: esQueries
             }
         }

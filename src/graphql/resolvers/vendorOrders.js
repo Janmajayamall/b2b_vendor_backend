@@ -6,7 +6,7 @@ module.exports = {
             //extracting contexts
             const { dbs, queries, reqHeaders } = context
 
-            // authenticate the buyer
+            // authenticate the vendor
             const vendorId = await verifyJwt(reqHeaders.authorization)
 
             // getting order id
@@ -21,7 +21,7 @@ module.exports = {
             //extracting contexts
             const { dbs, queries, reqHeaders } = context
 
-            // authenticate the buyer
+            // authenticate the vendor
             const vendorId = await verifyJwt(reqHeaders.authorization)
 
             // getting order id & user input
@@ -36,7 +36,7 @@ module.exports = {
             //extracting contexts
             const { dbs, queries, reqHeaders } = context
 
-            // authenticate the buyer
+            // authenticate the vendor
             const vendorId = await verifyJwt(reqHeaders.authorization)
 
             //creating orders for all the items
@@ -48,13 +48,27 @@ module.exports = {
             //extracting contexts
             const { dbs, queries, reqHeaders } = context
 
-            // authenticate the buyer
+            // authenticate the vendor
             const vendorId = await verifyJwt(reqHeaders.authorization)
 
             // getting order id
             const orderId = args.orderId
 
             const result = await queries.mongoDbQueries.getItemOrderDetails(dbs, vendorId, orderId)
+            return result
+        },
+
+        async getItemOrderQuotations(parent, args, context) {
+            //extracting contexts
+            const { dbs, queries, reqHeaders } = context
+
+            // authenticate the buyer
+            await verifyJwt(reqHeaders.authorization)
+
+            //getting order id
+            const { orderId, quotationFilters } = args
+
+            const result = await queries.mongoDbQueries.getItemOrderQuotations(dbs, orderId, quotationFilters)
             return result
         }
     }

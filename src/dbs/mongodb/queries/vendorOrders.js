@@ -192,10 +192,52 @@ async function updateVendorOrderDetails(dbs, vendorId, orderId, userInput) {
     }
 }
 
+async function getItemOrderQuotations(dbs, orderId, filters) {
+    /**
+     * Generating filter query for quotations
+     * Note that you can city, country, and state are mutually exclusive filters.
+     * Also, if preferredVendors is set to true then other filters don't apply.
+     */
+    let filterObject = {
+        orderId: ObjectID(orderId),
+        status: "QUOTED"
+    }
+    let sortObject = {
+        quotedLandingPrice: 1
+    }
+    //preferredVendors set to true
+    if (filters.preferredVendors != undefined && filters.preferredVendors === true) {
+        //TODO: get the vendorIds of preferredVendors & set the filter
+    } else if (filters.city != undefined && filters.city.trim() !== "") {
+        filterObject.city = filters.city.trim()
+    } else if (filters.state != undefined && filters.state.trim() !== "") {
+        filterObject.state = filters.state.trim()
+    } else if (filters.country != undefined && filters.country.trim() !== "") {
+        filterObject.country = filters.country.trim()
+    } else if (filters.sort != undefined) {
+        //checking sort type
+        if (filters.sort.nearest != undefined && filters.sort.nearest === true) {
+            sortObject = {
+                ...sortObject
+            }
+        }
+    }
+
+    //getting item order quotations
+    const result = await dbs.mainDb.client
+        .collection(dbs.mainDb.collections.vendorOrders)
+        .find(filterObject)
+        .sort(sortObject)
+        .toArray()
+
+    return result
+}
+
 module.exports = {
     bulkCreateVendorOrders,
     getIncomingVendorOrders,
     getItemOrderDetails,
     rejectItemOrder,
-    updateVendorOrderDetails
+    updateVendorOrderDetails,
+    getItemOrderQuotations
 }

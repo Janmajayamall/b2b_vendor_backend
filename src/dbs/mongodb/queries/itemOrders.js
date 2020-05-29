@@ -85,6 +85,9 @@ async function buyerGetActiveItemOrders(dbs, buyerId) {
             buyerId: ObjectID(buyerId),
             status: "ACTIVE"
         })
+        .sort({
+            createdAt: -1
+        })
         .toArray()
 
     //formatting response
@@ -99,9 +102,21 @@ async function buyerGetActiveItemOrders(dbs, buyerId) {
     return formattedResponse
 }
 
+async function buyerGetItemDetails(dbs, orderId) {
+    const result = await dbs.mainDb.client.collection(dbs.mainDb.collections.itemOrders).findOne({
+        _id: ObjectID(orderId)
+    })
+    const formattedResponse = {
+        ...result,
+        productParameters: JSON.stringify(result.productParameters)
+    }
+    return formattedResponse
+}
+
 module.exports = {
     createItemOrders,
-    buyerGetActiveItemOrders
+    buyerGetActiveItemOrders,
+    buyerGetItemDetails
 }
 
 // {

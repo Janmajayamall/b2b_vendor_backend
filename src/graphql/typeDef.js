@@ -239,6 +239,37 @@ module.exports = gql`
     }
 
     """
+    type VendorQuoteSimple
+    Used for showing quotations to they buyer as list
+    """
+    type VendorQuotationSimple {
+        # vendor's input
+        quotedProductName: String!
+        quotedProductDescription: String!
+        quotedProductParameters: String!
+        quotedPricePerUnit: Float!
+        quotedQuantityPrice: Float!
+        quotedQuantity: Float!
+        quotedUnit: String!
+        quotedDiscount: Float!
+        quotedDeliveryCost: Float!
+        quotedLandingPrice: Float!
+        quotedPriceCurrency: String!
+        quotedValidity: Float!
+        quotedDeliveryDays: String!
+        quotedTermsAndConditions: String!
+        status: String!
+
+        # vendor's company
+        vendorName: String!
+        vendorCompanyName: String!
+        vendorCompanyId: ID!
+        vendorCompanyCity: String!
+        vendorCompanyState: String!
+        vendorCompanyLocationCoordinates: [Float!]
+    }
+
+    """
     input updateVendorOrderDetails
     used for updating vendor order details
     used in scenarios like user submitting quotation
@@ -264,6 +295,35 @@ module.exports = gql`
     type ItemOrderDetailsResponse {
         error: String!
         itemOrder: VendorOrderDetails
+    }
+
+    """
+    input quotationFiltersSortInput
+    Used for sorting quotations
+    """
+    input quotationFiltersSortInput {
+        nearest: Boolean
+    }
+
+    """
+    input quotationFiltersInput
+    Used for applying filters on returned quotations list
+    """
+    input quotationFiltersInput {
+        city: String
+        state: String
+        country: String
+        preferredVendors: Boolean
+        sort: quotationFiltersSortInput
+    }
+
+    """
+    input getItemOrderQuotationsInput
+    Used for getting quotations of item order & corresponding filters
+    """
+    input getItemOrderQuotationsInput {
+        orderId: ID!
+        quotationFilters: quotationFiltersInput!
     }
 
     type Mutation {
@@ -303,8 +363,10 @@ module.exports = gql`
         #vendorOrders
         getIncomingVendorOrders: [VendorOrderSimple!]!
         getItemOrderDetails(orderId: ID!): ItemOrderDetailsResponse!
+        getItemOrderQuotations(userInput: getItemOrderQuotationsInput!): [VendorQuotationSimple!]!
 
         #itemOrders
         buyerGetActiveItemOrders: [BuyerItemOrder!]!
+        buyerGetItemDetails(orderId: ID!): BuyerItemOrder!
     }
 `

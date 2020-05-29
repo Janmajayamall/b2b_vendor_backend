@@ -41,7 +41,7 @@ async function getMatchedVendors(dbs, matchObject) {
     return result
 }
 
-async function esBulkIndexCategories(dbs, operations) {
+async function esBulkCreateIndex(dbs, operations) {
     const body = operations.flatMap((doc) => {
         const tempDoc = {
             ...doc,
@@ -73,7 +73,7 @@ async function syncEsVendorCategories(dbs, operations, eventType) {
     try {
         //create
         if (constants.esEvents.create === eventType) {
-            const result = await esBulkIndexCategories(dbs, operations)
+            const result = await esBulkCreateIndex(dbs, operations)
             return result
         }
     } catch (e) {

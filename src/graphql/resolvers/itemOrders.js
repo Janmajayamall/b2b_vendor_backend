@@ -28,6 +28,22 @@ module.exports = {
             //getting active itemOrders
             const result = await queries.mongoDbQueries.buyerGetActiveItemOrders(dbs, buyerId)
             return result
+        },
+
+        async buyerGetItemDetails(parent, args, context) {
+            //extracting contexts
+            const { dbs, queries, reqHeaders } = context
+
+            // authenticate the buyer
+            const buyerId = await verifyJwt(reqHeaders.authorization)
+
+            //get orderId
+            const orderId = args.orderId
+
+            //getting buyer item order details
+            const result = await queries.mongoDbQueries.buyerGetItemDetails(dbs, orderId)
+
+            return result
         }
     }
 }

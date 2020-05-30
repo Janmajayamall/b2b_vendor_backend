@@ -165,6 +165,7 @@ module.exports = gql`
     type VendorOrderSimple {
         vendorId: ID!
         orderId: ID!
+        _id: ID!
 
         # buyer's input
         productName: String!
@@ -191,6 +192,7 @@ module.exports = gql`
     type VendorOrderDetails {
         vendorId: ID!
         orderId: ID!
+        _id: ID!
 
         # buyer's input
         productName: String!
@@ -243,6 +245,11 @@ module.exports = gql`
     Used for showing quotations to they buyer as list
     """
     type VendorQuotationSimple {
+        _id: ID!
+
+        vendorId: ID!
+        orderId: ID!
+
         # vendor's input
         quotedProductName: String!
         quotedProductDescription: String!
@@ -348,6 +355,9 @@ module.exports = gql`
         #vendorOrders
         updateVendorOrderDetails(orderId: ID!, userInput: updateVendorOrderDetailsInput!): ErrorStateResponse!
         rejectItemOrder(orderId: ID!): Boolean!
+        buyerMarkUnderReviewQuotation(quotationId: ID!): Boolean!
+        buyerUnmarkUnderReviewQuotation(quotationId: ID!): Boolean!
+        buyerFinalizeQuotation(quotationId: ID!): Boolean!
 
         #companies
         registerCompany(userInput: registerCompanyInput): AuthenticationResponse!
@@ -364,6 +374,7 @@ module.exports = gql`
         getIncomingVendorOrders: [VendorOrderSimple!]!
         getItemOrderDetails(orderId: ID!): ItemOrderDetailsResponse!
         getItemOrderQuotations(userInput: getItemOrderQuotationsInput!): [VendorQuotationSimple!]!
+        getQuotationDetails(quotationId: ID!): VendorQuotationSimple!
 
         #itemOrders
         buyerGetActiveItemOrders: [BuyerItemOrder!]!

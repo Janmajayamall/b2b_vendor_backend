@@ -118,36 +118,3 @@ module.exports = {
     buyerGetActiveItemOrders,
     buyerGetItemDetails
 }
-
-// {
-//     "_id": {
-//         "$oid": "5ebee0a54d8689fcf3bda71d"
-//     },
-//     "buyerId": {
-//     "$oid":"507f1f77bcf86cd799439011"
-// },
-//     "buyerRfqId": "element.buyerRfqId.trim()",
-//     "buyerPrId": "element.buyerPrId.trim()",
-//     "buyerItemId": "element.buyerItemId.trim()",
-//     "productName": "element.productName.trim()",
-//     "productDescription": "element.productDescription.trim()",
-//     "quantity":3.2323,
-//     "unit": "element.unit.trim()",
-//     "termsAndConditions": "element.termsAndConditions.trim()",
-//     "productParameters": { "dwdad": "dawd" },
-//     "deliveryDays": 4.2,
-//     "buyerGroupId": "e15aa62e-5d03-4c0d-af36-c4f9e124c66f",
-//     "companyId": {
-//         "$oid":"507f1f77bcf86cd799439011"
-//     },
-//     "companyName": "companyProfileObject.name",
-//     "companyCity": "companyProfileObject.city",
-//     "companyState": "companyProfileObject.state",
-//     "companyLocationCoordinates": [ "as" ],
-//     "companyCountry": " companyProfileObject.country",
-//     "createdAt": "2020-05-15T18:31:30.472Z",
-//     "lastModified": "2020-05-15T18:31:30.472Z",
-//     "status": "ACTIVE"
-// }
-
-// Reason: [18:37:24.130] Error running insert command for 'mainDb.item_orders' on process 'cluster0-shard-00-02-9n0o8.mongodb.net:27017' : [18:37:24.130] Error executing WithClientFor() for cp=cluster0-shard-00-02-9n0o8.mongodb.net:27017 (local=true) connectMode=SingleConnect : [18:37:24.130] Error running command for runCommandWithTimeout(dbName=mainDb, cmd=[{insert item_orders} {documents [[{_id ObjectID("5ebee0a54d8689fcf3bda71d")} {buyerId ObjectID("507f1f77bcf86cd799439011")} {buyerRfqId element.buyerRfqId.trim()} {buyerPrId element.buyerPrId.trim()} {buyerItemId element.buyerItemId.trim()} {productName element.productName.trim()} {productDescription element.productDescription.trim()} {quantity 3.2323} {unit element.unit.trim()} {termsAndConditions element.termsAndConditions.trim()} {productParameters [{dwdad dawd}]} {deliveryDays 4.2} {buyerGroupId e15aa62e-5d03-4c0d-af36-c4f9e124c66f} {companyId ObjectID("507f1f77bcf86cd799439011")} {companyName companyProfileObject.name} {companyCity companyProfileObject.city} {companyState companyProfileObject.state} {companyLocationCoordinates [as]} {companyCountry companyProfileObject.country} {createdAt 2020-05-15T18:31:30.472Z} {lastModified 2020-05-15T18:31:30.472Z} {status ACTIVE}]]} {writeConcern map[w:1]}]) : result="" identityUsed=mms-automation@admin[[MONGODB-CR/SCRAM-SHA-1]][24] : write command error: [{write errors: [{Document failed validation}]}, {<nil>}]

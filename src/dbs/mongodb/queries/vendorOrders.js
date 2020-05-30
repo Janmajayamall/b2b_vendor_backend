@@ -198,6 +198,7 @@ async function getItemOrderQuotations(dbs, orderId, filters) {
      * Note that you can city, country, and state are mutually exclusive filters.
      * Also, if preferredVendors is set to true then other filters don't apply.
      */
+    console.log(filters, orderId)
     let filterObject = {
         orderId: ObjectID(orderId),
         status: "QUOTED"
@@ -230,7 +231,90 @@ async function getItemOrderQuotations(dbs, orderId, filters) {
         .sort(sortObject)
         .toArray()
 
-    return result
+    const formattedResult = []
+    result.forEach((object) => {
+        formattedResult.push({
+            ...object,
+            productParameters: JSON.stringify(object.productParameters),
+            quotedProductParameters: JSON.stringify(object.quotedProductParameters)
+        })
+    })
+    return formattedResult
+}
+
+async function getQuotationDetails(dbs, quotationId) {
+    //getting item order quotations
+    const result = await dbs.mainDb.client.collection(dbs.mainDb.collections.vendorOrders).findOne({
+        _id: ObjectID(quotationId)
+    })
+
+    const formattedResponse = {
+        ...result,
+        productParameters: JSON.stringify(result.productParameters),
+        quotedProductParameters: JSON.stringify(result.quotedProductParameters)
+    }
+    return formattedResponse
+}
+
+async function buyerMarkUnderReviewQuotation(dbs, quotationId) {
+    let result = await dbs.mainDb.client.collection(dbs.mainDb.collections.vendorOrders).findOneAndUpdate(
+        {
+            _id: ObjectID(quotationId)
+        },
+        {
+            $set: { status: "REVIEW" }
+        },
+        { returnNewDocument: true }
+    )
+    console.log(result)
+    return true
+}
+
+async function buyerUnmarkUnderReviewQuotation(dbs, quotationId) {
+    let result = await dbs.mainDb.client.collection(dbs.mainDb.collections.vendorOrders).findOneAndUpdate(
+        {
+            _id: ObjectID(quotationId)
+        },
+        {
+            $set: { status: "QUOTED" }
+        },
+        { returnNewDocument: true }
+    )
+    console.log(result)
+    return true
+}
+
+async function buyerFinalizeQuotation(dbs, quotationId) {
+    /**
+     * 1. Change status of quotations that are not CANCELLED & not with _id === quotationId
+     *    to status=REJECTED
+     * 2. Change the quotation with _id=quotationId to ACCEPTED
+     */
+
+    //step 1
+    let resOne = await dbs.mainDb.client.collection(dbs.mainDb.collections.vendorOrders).findOneAndUpdate(
+        {
+            _id: { $ne: ObjectID(quotationId) },
+            status: { $ni: ["CANCELLED"] }
+        },
+        {
+            $set: { status: "REJECTED" }
+        },
+        { returnNewDocument: true }
+    )
+
+    //step 2
+    let resTwo = await dbs.mainDb.client.collection(dbs.mainDb.collections.vendorOrders).findOneAndUpdate(
+        {
+            _id: ObjectID(quotationId)
+        },
+        {
+            $set: { status: "ACCEPTED" }
+        },
+        { returnNewDocument: true }
+    )
+    console.log(resTwo)
+    return true
 }
 
 module.exports = {
@@ -239,5 +323,9 @@ module.exports = {
     getItemOrderDetails,
     rejectItemOrder,
     updateVendorOrderDetails,
-    getItemOrderQuotations
+    getItemOrderQuotations,
+    getQuotationDetails,
+    buyerMarkUnderReviewQuotation,
+    buyerUnmarkUnderReviewQuotation,
+    buyerFinalizeQuotation
 }

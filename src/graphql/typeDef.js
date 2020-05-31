@@ -305,6 +305,43 @@ module.exports = gql`
     }
 
     """
+    type PreferredVendor
+    Used for sending back information of vendor preferences
+    """
+    type PreferredVendor {
+        vendorCompanyId: ID!
+        vendorCompanyName: String!
+    }
+
+    """
+    type CompanyProfile
+    Used for sending back company profiles
+    """
+    type CompanyProfile {
+        companyId: ID!
+        name: String!
+        country: String!
+        city: String!
+        state: String!
+    }
+
+    """
+    type CompanyGetVendorCompanyProfile
+    used for sending back vendorProfile with additional details
+    """
+    type CompanyGetVendorCompanyProfile {
+        preferredVendor: Boolean!
+    }
+
+    """
+    input searchCompanyProfilesInput
+    Used for searching company profiles
+    """
+    input searchCompanyProfilesInput {
+        keywords: String!
+    }
+
+    """
     input quotationFiltersSortInput
     Used for sorting quotations
     """
@@ -355,9 +392,9 @@ module.exports = gql`
         #vendorOrders
         updateVendorOrderDetails(orderId: ID!, userInput: updateVendorOrderDetailsInput!): ErrorStateResponse!
         rejectItemOrder(orderId: ID!): Boolean!
-        buyerMarkUnderReviewQuotation(quotationId: ID!): Boolean!
-        buyerUnmarkUnderReviewQuotation(quotationId: ID!): Boolean!
-        buyerFinalizeQuotation(quotationId: ID!): Boolean!
+        buyerMarkUnderReviewQuotation(quotationId: ID!): ErrorStateResponse!
+        buyerUnmarkUnderReviewQuotation(quotationId: ID!): ErrorStateResponse!
+        buyerFinalizeQuotation(quotationId: ID!, orderId: ID!): ErrorStateResponse!
 
         #companies
         registerCompany(userInput: registerCompanyInput): AuthenticationResponse!
@@ -365,6 +402,10 @@ module.exports = gql`
 
         #companyProfiles
         createCompanyProfile(userInput: createCompanyProfileInput!): ErrorStateResponse!
+
+        #preferredVendors
+        addPreferredVendor(vendorCompanyId: ID!): ErrorStateResponse!
+        removePreferredVendor(vendorCompanyId: ID!): ErrorStateResponse!
     }
 
     type Query {
@@ -375,9 +416,20 @@ module.exports = gql`
         getItemOrderDetails(orderId: ID!): ItemOrderDetailsResponse!
         getItemOrderQuotations(userInput: getItemOrderQuotationsInput!): [VendorQuotationSimple!]!
         getQuotationDetails(quotationId: ID!): VendorQuotationSimple!
+        getItemOrderQuotationsUnderReview(orderId: ID!): [VendorQuotationSimple!]!
+        getItemOrderAcceptedQuotation(orderId: ID!): VendorQuotationSimple
+
+        #companyProfiles
+        searchCompanyProfiles(userInput: searchCompanyProfilesInput): [CompanyProfile!]!
+        companyGetVendorCompanyProfile(vendorCompanyId: ID!): CompanyGetVendorCompanyProfile!
 
         #itemOrders
         buyerGetActiveItemOrders: [BuyerItemOrder!]!
         buyerGetItemDetails(orderId: ID!): BuyerItemOrder!
+
+        #preferredVendors
+        companyGetPreferredVendors: [PreferredVendor!]!
+        buyerGetPreferredVendors: [PreferredVendor!]!
+        companyCheckPreferredVendor(vendorCompanyId: ID!): Boolean!
     }
 `

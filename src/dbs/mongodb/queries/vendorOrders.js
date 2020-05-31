@@ -201,7 +201,7 @@ async function getItemOrderQuotations(dbs, orderId, filters) {
     console.log(filters, orderId)
     let filterObject = {
         orderId: ObjectID(orderId),
-        status: "QUOTED"
+        status: { $in: ["QUOTED", "REJECTED"] }
     }
     let sortObject = {
         quotedLandingPrice: 1
@@ -257,6 +257,7 @@ async function getQuotationDetails(dbs, quotationId) {
 }
 
 async function buyerMarkUnderReviewQuotation(dbs, quotationId) {
+    console.log(quotationId)
     let result = await dbs.mainDb.client.collection(dbs.mainDb.collections.vendorOrders).findOneAndUpdate(
         {
             _id: ObjectID(quotationId)
@@ -266,8 +267,10 @@ async function buyerMarkUnderReviewQuotation(dbs, quotationId) {
         },
         { returnNewDocument: true }
     )
-    console.log(result)
-    return true
+
+    return {
+        error: constants.errorCodes.noError
+    }
 }
 
 async function buyerUnmarkUnderReviewQuotation(dbs, quotationId) {
@@ -280,27 +283,60 @@ async function buyerUnmarkUnderReviewQuotation(dbs, quotationId) {
         },
         { returnNewDocument: true }
     )
-    console.log(result)
-    return true
+    return {
+        error: constants.errorCodes.noError
+    }
 }
 
-async function buyerFinalizeQuotation(dbs, quotationId) {
+async function buyerFinalizeQuotation(dbs, quotationId, orderId) {
+    console.log(quotationId, orderId)
+    /**
+     * Necessary check before proceeding with finalizing quotation
+     * for Item Order
+     * 1. Check Item Order is not NOT_ACTIVE
+     * 2. Check No Quotation with order
+     */
+    let checkItemOrder = await dbs.mainDb.client.collection(dbs.mainDb.collections.itemOrders).findOne({
+        _id: ObjectID(orderId)
+    })
+    if (checkItemOrder == undefined || checkItemOrder.status == undefined) {
+        return {
+            error: constants.errorCodes.orderItemDoesNotExists
+        }
+    }
+    if (checkItemOrder.status === "NOT_ACTIVE") {
+        return {
+            error: constants.errorCodes.orderItemClosed
+        }
+    }
+
+    let checkFinalizedQuote = await dbs.mainDb.client.collection(dbs.mainDb.collections.vendorOrders).findOne({
+        orderId: ObjectID(orderId),
+        status: "ACCEPTED"
+    })
+    if (checkFinalizedQuote != undefined) {
+        return {
+            error: constants.errorCodes.finalizedQuotationExists
+        }
+    }
+
     /**
      * 1. Change status of quotations that are not CANCELLED & not with _id === quotationId
      *    to status=REJECTED
      * 2. Change the quotation with _id=quotationId to ACCEPTED
+     * 3. Close the Item Order
      */
 
     //step 1
-    let resOne = await dbs.mainDb.client.collection(dbs.mainDb.collections.vendorOrders).findOneAndUpdate(
+    let resOne = await dbs.mainDb.client.collection(dbs.mainDb.collections.vendorOrders).updateMany(
         {
             _id: { $ne: ObjectID(quotationId) },
-            status: { $ni: ["CANCELLED"] }
+            status: { $nin: ["CANCELLED"] },
+            orderId: { $eq: ObjectID(orderId) }
         },
         {
             $set: { status: "REJECTED" }
-        },
-        { returnNewDocument: true }
+        }
     )
 
     //step 2
@@ -313,8 +349,64 @@ async function buyerFinalizeQuotation(dbs, quotationId) {
         },
         { returnNewDocument: true }
     )
-    console.log(resTwo)
-    return true
+
+    //step 3
+    let resItemOrder = await dbs.mainDb.client.collection(dbs.mainDb.collections.itemOrders).findOneAndUpdate(
+        {
+            _id: ObjectID(orderId)
+        },
+        {
+            $set: { status: "NOT_ACTIVE" }
+        }
+    )
+
+    return {
+        error: constants.errorCodes.noError
+    }
+}
+
+async function getItemOrderQuotationsUnderReview(dbs, orderId) {
+    //getting item order quotations where status is REVIEW
+    const result = await dbs.mainDb.client
+        .collection(dbs.mainDb.collections.vendorOrders)
+        .find({
+            orderId: ObjectID(orderId),
+            status: "REVIEW"
+        })
+        .sort({
+            quotedLandingPrice: 1
+        })
+        .toArray()
+
+    const formattedResult = []
+    result.forEach((object) => {
+        formattedResult.push({
+            ...object,
+            productParameters: JSON.stringify(object.productParameters),
+            quotedProductParameters: JSON.stringify(object.quotedProductParameters)
+        })
+    })
+    return formattedResult
+}
+
+async function getItemOrderAcceptedQuotation(dbs, orderId) {
+    //getting item order quotations where status is REVIEW
+    const result = await dbs.mainDb.client.collection(dbs.mainDb.collections.vendorOrders).findOne({
+        orderId: ObjectID(orderId),
+        status: "ACCEPTED"
+    })
+
+    if (result == undefined) {
+        return
+    }
+
+    const formattedResult = {
+        ...result,
+        productParameters: JSON.stringify(result.productParameters),
+        quotedProductParameters: JSON.stringify(result.quotedProductParameters)
+    }
+
+    return formattedResult
 }
 
 module.exports = {
@@ -327,5 +419,7 @@ module.exports = {
     getQuotationDetails,
     buyerMarkUnderReviewQuotation,
     buyerUnmarkUnderReviewQuotation,
-    buyerFinalizeQuotation
+    buyerFinalizeQuotation,
+    getItemOrderQuotationsUnderReview,
+    getItemOrderAcceptedQuotation
 }

@@ -67,9 +67,9 @@ module.exports = {
             await verifyJwt(reqHeaders.authorization)
 
             //getting quotationId
-            const { quotationId } = args
+            const { quotationId, orderId } = args
 
-            const result = await queries.mongoDbQueries.buyerFinalizeQuotation(dbs, quotationId)
+            const result = await queries.mongoDbQueries.buyerFinalizeQuotation(dbs, quotationId, orderId)
             return result
         }
     },
@@ -125,6 +125,34 @@ module.exports = {
             const { quotationId } = args
 
             const result = await queries.mongoDbQueries.getQuotationDetails(dbs, quotationId)
+            return result
+        },
+
+        async getItemOrderQuotationsUnderReview(parent, args, context) {
+            //extracting contexts
+            const { dbs, queries, reqHeaders } = context
+
+            // authenticate the buyer
+            await verifyJwt(reqHeaders.authorization)
+
+            //getting order id
+            const { orderId } = args
+
+            const result = await queries.mongoDbQueries.getItemOrderQuotationsUnderReview(dbs, orderId)
+            return result
+        },
+
+        async getItemOrderAcceptedQuotation(parent, args, context) {
+            //extracting contexts
+            const { dbs, queries, reqHeaders } = context
+
+            // authenticate the buyer
+            await verifyJwt(reqHeaders.authorization)
+
+            //getting order id
+            const { orderId } = args
+
+            const result = await queries.mongoDbQueries.getItemOrderAcceptedQuotation(dbs, orderId)
             return result
         }
     }

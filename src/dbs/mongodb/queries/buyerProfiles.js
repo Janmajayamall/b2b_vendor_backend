@@ -7,7 +7,7 @@ async function createBuyerProfile(dbs, registrationObject, buyerId, companyId) {
             buyerId: ObjectID(buyerId)
         })
 
-        if (checkProfileRes) {
+        if (checkProfileRes != undefined) {
             return true
         }
 

@@ -15,5 +15,33 @@ module.exports = {
             const result = await queries.mongoDbQueries.createCompanyProfile(dbs, registerObject, companyId)
             return result
         }
+    },
+    Queries: {
+        async searchCompanyProfiles(parent, args, context) {
+            //extracting contexts
+            const { dbs, queries, reqHeaders } = context
+
+            //authenticate request
+            const companyId = await verifyJwt(reqHeaders.authorization)
+
+            //get user input
+            const { userInput } = args
+
+            const result = await queries.mongoDbQueries.searchCompanyProfiles(dbs, companyId, userInput)
+            return result
+        },
+        async companyGetVendorCompanyProfile(parent, args, context) {
+            //extracting contexts
+            const { dbs, queries, reqHeaders } = context
+
+            //authenticate request
+            const companyId = await verifyJwt(reqHeaders.authorization)
+
+            //get user input
+            const { vendorId } = args
+
+            const result = await queries.mongoDbQueries.companyGetVendorCompanyProfile(dbs, companyId, vendorId)
+            return result
+        }
     }
 }

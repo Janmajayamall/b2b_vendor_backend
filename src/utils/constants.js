@@ -14,6 +14,11 @@ module.exports.constants = {
         invalidCreds: "3",
         profileAlreadyCreated: "4",
         recordNotFound: "5",
+        finalizedQuotationExists: "6",
+        orderItemClosed: "7",
+        orderItemDoesNotExists: "8",
+        idsMatch: "9",
+        idDoesNotExists: "10",
         unknownError: "1000"
     },
     esEvents: {

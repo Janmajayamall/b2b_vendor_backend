@@ -10,7 +10,8 @@ module.exports = {
             buyerProfiles: "buyerProfiles",
             vendorCategoryProducts: "vendor_category_products",
             itemOrders: "item_orders",
-            vendorOrders: "vendor_orders"
+            vendorOrders: "vendor_orders",
+            preferredVendors: "preferred_vendors"
         },
         client: null
     },

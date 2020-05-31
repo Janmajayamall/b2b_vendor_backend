@@ -710,6 +710,56 @@ async function createVendorOrders(mainDb) {
     return result
 }
 
+async function createPreferredVendors(mainDb) {
+    var result = await mainDb.client.createCollection(mainDb.collections.preferredVendors, {
+        validator: {
+            $jsonSchema: {
+                bsonType: "object",
+                required: [
+                    "companyId",
+                    "companyName",
+                    "vendorCompanyId",
+                    "vendorCompanyName",
+                    "createdAt",
+                    "lastModified",
+                    "status"
+                ],
+                properties: {
+                    companyId: {
+                        bsonType: "objectId",
+                        description: "required"
+                    },
+                    companyName: {
+                        bsonType: "string",
+                        description: "required"
+                    },
+                    vendorCompanyId: {
+                        bsonType: "objectId",
+                        description: "required"
+                    },
+                    vendorCompanyName: {
+                        bsonType: "string",
+                        description: "required"
+                    },
+                    createdAt: {
+                        bsonType: "date",
+                        description: "required"
+                    },
+                    lastModified: {
+                        bsonType: "date",
+                        description: "required"
+                    },
+                    status: {
+                        bsonType: "string",
+                        description: "required"
+                    }
+                }
+            }
+        }
+    })
+    return result
+}
+
 module.exports = {
     createCompanyProfiles,
     createCompanies,
@@ -719,7 +769,8 @@ module.exports = {
     createBuyerProfiles,
     createVendorCategoryProducts,
     createItemOrders,
-    createVendorOrders
+    createVendorOrders,
+    createPreferredVendors
 }
 
 /** companyProfiles

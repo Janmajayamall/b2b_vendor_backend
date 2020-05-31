@@ -3,18 +3,17 @@ const { constants } = require("./../../../utils/index")
 
 async function createCompanyProfile(dbs, registrationObject, companyId) {
     //check whether company profile with companyId exists or not
+
     const checkProfileRes = await dbs.mainDb.client.collection(dbs.mainDb.collections.companyProfiles).findOne({
         companyId: ObjectID(companyId)
     })
-
+    console.log(registrationObject, "dadadad")
     //if profile exists, then ask to edit & return
     if (checkProfileRes) {
         return {
             error: constants.errorCodes.profileAlreadyCreated
         }
     }
-
-    console.log(registrationObject)
 
     //create the profile
     const result = await dbs.mainDb.client.collection(dbs.mainDb.collections.companyProfiles).insertOne({
@@ -48,7 +47,48 @@ async function getCompanyProfile(dbs, companyId) {
     return result
 }
 
+async function searchCompanyProfiles(dbs, companyId, searchInput) {
+    console.log(companyId, searchInput)
+
+    //generating search query
+    let findQuery = {}
+    if (searchInput.keywords.trim() !== "") {
+        findQuery.name = searchInput.keywords.trim()
+    }
+
+    const result = await dbs.mainDb.client.collection(dbs.mainDb.collections.companyProfiles).find(findQuery).toArray()
+
+    //checking for company itself
+    const finalList = []
+    result.forEach((object) => {
+        if (!ObjectID(object.companyId).equals(ObjectID(companyId))) {
+            finalList.push(object)
+        }
+    })
+    return finalList
+}
+
+async function companyGetVendorCompanyProfile(dbs, companyId, vendorCompanyId) {
+    //TODO: get the profile info of the vendorCompanyProfile
+
+    const vendorPreferenceRes = await dbs.mainDb.client.collection(dbs.mainDb.collections.preferredVendors).findOne({
+        companyId: ObjectID(companyId),
+        vendorCompanyId: ObjectID(vendorCompanyId),
+        status: "ACTIVE"
+    })
+    let preferredVendor = false
+    if (vendorPreferenceRes != undefined) {
+        preferredVendor = true
+    }
+
+    return {
+        preferredVendor: preferredVendor
+    }
+}
+
 module.exports = {
     createCompanyProfile,
-    getCompanyProfile
+    getCompanyProfile,
+    searchCompanyProfiles,
+    companyGetVendorCompanyProfile
 }

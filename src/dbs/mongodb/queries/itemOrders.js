@@ -3,6 +3,7 @@ const { v4: uuidv4 } = require("uuid")
 const {} = require("./../../../utils/index")
 
 async function createItemOrders(dbs, queries, createOrdersInput, buyerId) {
+    console.log(createOrdersInput, "createItemOrders - createOrdersInput")
     // get buyer's details
     const buyerProfileObject = await dbs.mainDb.client.collection(dbs.mainDb.collections.buyerProfiles).findOne({
         buyerId: ObjectID(buyerId)
@@ -51,26 +52,51 @@ async function createItemOrders(dbs, queries, createOrdersInput, buyerId) {
             status: "ACTIVE"
         })
     })
-    console.log(insertManyOps)
+
     //insert Many request
     let result = await dbs.mainDb.client.collection(dbs.mainDb.collections.itemOrders).insertMany(insertManyOps)
     result = result.ops
 
+    /**
+     * Getting matching vendors
+     * 1. Get vendorIds of all preferred vendor companies
+     * 2. Find vendors for item orders from es
+     */
+    let vendorsIds = []
+
+    //step 1
+    const chosenPreferredVendors = createOrdersInput.chosenPreferredVendors
+    for (let i = 0; i < chosenPreferredVendors.length; i++) {
+        //making sure that the company of buyer & preferred vendor is not equal
+        if (ObjectID(chosenPreferredVendors[i]).equals(ObjectID(buyerProfileObject.companyId))) {
+            continue
+        }
+
+        //getting vendors from preferred company
+        const companyVendors = await dbs.mainDb.client
+            .collection(dbs.mainDb.collections.vendorProfiles)
+            .find({
+                companyId: ObjectID(chosenPreferredVendors[i])
+            })
+            .toArray()
+        companyVendors.forEach((object) => {
+            vendorsIds.push(object.vendorId.toString())
+        })
+    }
+
+    //step 2
     //finding vendor for the item orders
     const esRes = await queries.esQueries.getMatchedVendors(dbs, {
         categories: createOrdersInput.categories,
         products: createOrdersInput.products
     })
-
-    //getting vendors
-    const vendors = []
     esRes.hits.hits.forEach((hit) => {
-        vendors.push(hit._source)
+        vendorsIds.push(hit._source.vendorId)
     })
-    console.log(vendors)
+    console.log("creatItemOrders final vendorIds: ", vendorsIds)
     //bulk generate vendor orders
     try {
-        queries.mongoDbQueries.bulkCreateVendorOrders(dbs, result, vendors)
+        queries.mongoDbQueries.bulkCreateVendorOrders(dbs, result, vendorsIds)
     } catch (e) {
         console.log("Placing vendor orders for the item failed with error: ", e)
     }

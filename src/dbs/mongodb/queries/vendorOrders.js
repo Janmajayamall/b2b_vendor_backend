@@ -5,7 +5,7 @@ async function bulkCreateVendorOrders(dbs, itemOrdersOps, vendorsList) {
     //creating set of vendor ids --> in order to unique vendor ids
     const vendorsSet = new Set()
     vendorsList.forEach((vendor) => {
-        vendorsSet.add(vendor.vendorId)
+        vendorsSet.add(vendor)
     })
 
     //converting set to array

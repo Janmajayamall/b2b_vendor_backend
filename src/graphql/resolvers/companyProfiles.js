@@ -38,9 +38,9 @@ module.exports = {
             const companyId = await verifyJwt(reqHeaders.authorization)
 
             //get user input
-            const { vendorId } = args
+            const { vendorCompanyId } = args
 
-            const result = await queries.mongoDbQueries.companyGetVendorCompanyProfile(dbs, companyId, vendorId)
+            const result = await queries.mongoDbQueries.companyGetVendorCompanyProfile(dbs, companyId, vendorCompanyId)
             return result
         }
     }

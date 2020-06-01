@@ -7,5 +7,6 @@ module.exports = {
     ...require("./vendorCategoryProducts"),
     ...require("./vendorOrders"),
     ...require("./vendorProfiles"),
-    ...require("./vendors")
+    ...require("./vendors"),
+    ...require("./preferredVendors")
 }

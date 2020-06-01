@@ -8,6 +8,7 @@ const companies = require("./companies")
 const companyProfiles = require("./companyProfiles")
 const vendorOrders = require("./vendorOrders")
 const preferredVendors = require("./preferredVendors")
+const awsServices = require("./awsServices")
 
 module.exports = {
     Mutation: {
@@ -28,6 +29,7 @@ module.exports = {
         ...vendorOrders.Query,
         ...itemOrders.Query,
         ...preferredVendors.Query,
-        ...companyProfiles.Queries
+        ...companyProfiles.Queries,
+        ...awsServices.Query
     }
 }

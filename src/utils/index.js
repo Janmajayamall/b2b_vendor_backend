@@ -1,5 +1,6 @@
 module.exports = {
     ...require("./authentication"),
     ...require("./constants"),
-    ...require("./helpers")
+    ...require("./helpers"),
+    ...require("./aws/index")
 }

@@ -86,6 +86,7 @@ module.exports = gql`
         categories: [String!]!
         products: [String!]!
         items: [itemInput!]!
+        chosenPreferredVendors: [ID!]!
     }
 
     """
@@ -370,6 +371,15 @@ module.exports = gql`
         quotationFilters: quotationFiltersInput!
     }
 
+    """
+    input getSignedUrlPutObjectInput
+    Used for sending back signed put request for uploading file without authentication
+    """
+    input getSignedUrlPutObjectInput {
+        fileName: String!
+        fileMime: String!
+    }
+
     type Mutation {
         #vendors
         registerVendor(userInput: registerVendorInput!): ErrorStateResponse!
@@ -431,5 +441,8 @@ module.exports = gql`
         companyGetPreferredVendors: [PreferredVendor!]!
         buyerGetPreferredVendors: [PreferredVendor!]!
         companyCheckPreferredVendor(vendorCompanyId: ID!): Boolean!
+
+        #file upload s3
+        getSignedUrlPutObject(userInput: getSignedUrlPutObjectInput): String!
     }
 `

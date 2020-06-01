@@ -385,7 +385,8 @@ async function createItemOrders(mainDb) {
                     "companyCountry",
                     "createdAt",
                     "lastModified",
-                    "status"
+                    "status",
+                    "productFile"
                 ],
                 properties: {
                     buyerId: {
@@ -475,6 +476,10 @@ async function createItemOrders(mainDb) {
                     status: {
                         bsonType: "string",
                         description: "required"
+                    },
+                    productFile: {
+                        bsonType: "string",
+                        description: "required"
                     }
                 }
             }
@@ -500,6 +505,7 @@ async function createVendorOrders(mainDb) {
                     "unit",
                     "termsAndConditions",
                     "deliveryDays",
+                    "productFile",
                     "buyerId",
                     "buyerName",
                     "companyId",
@@ -524,6 +530,7 @@ async function createVendorOrders(mainDb) {
                     "quotedValidity",
                     "quotedDeliveryDays",
                     "quotedTermsAndConditions",
+                    "quotedProductFile",
                     "status",
                     "vendorName",
                     //vendor's company
@@ -572,6 +579,10 @@ async function createVendorOrders(mainDb) {
                         description: "required"
                     },
                     deliveryDays: {
+                        bsonType: "string",
+                        description: "required"
+                    },
+                    productFile: {
                         bsonType: "string",
                         description: "required"
                     },
@@ -662,6 +673,10 @@ async function createVendorOrders(mainDb) {
                         description: "required"
                     },
                     quotedTermsAndConditions: {
+                        bsonType: "string",
+                        description: "required"
+                    },
+                    quotedProductFile: {
                         bsonType: "string",
                         description: "required"
                     },

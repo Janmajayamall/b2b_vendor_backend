@@ -3,7 +3,7 @@ const { v4: uuidv4 } = require("uuid")
 const {} = require("./../../../utils/index")
 
 async function createItemOrders(dbs, queries, createOrdersInput, buyerId) {
-    console.log(createOrdersInput, "createItemOrders - createOrdersInput")
+    // console.log(createOrdersInput, "createItemOrders - createOrdersInput")
     // get buyer's details
     const buyerProfileObject = await dbs.mainDb.client.collection(dbs.mainDb.collections.buyerProfiles).findOne({
         buyerId: ObjectID(buyerId)
@@ -20,7 +20,7 @@ async function createItemOrders(dbs, queries, createOrdersInput, buyerId) {
     if (!companyProfileObject) {
         return false
     }
-    console.log(buyerId, buyerProfileObject, companyProfileObject)
+
     const buyerGroupId = uuidv4()
 
     //generating insert many operations for item Orders
@@ -49,7 +49,8 @@ async function createItemOrders(dbs, queries, createOrdersInput, buyerId) {
             companyCountry: companyProfileObject.country,
             createdAt: new Date(),
             lastModified: new Date(),
-            status: "ACTIVE"
+            status: "ACTIVE",
+            productFile: element.productFile.trim()
         })
     })
 

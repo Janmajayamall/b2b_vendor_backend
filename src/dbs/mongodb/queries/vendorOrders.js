@@ -67,6 +67,7 @@ async function bulkCreateVendorOrders(dbs, itemOrdersOps, vendorsList) {
             vendorOperation.quotedValidity = Double(0.0)
             vendorOperation.quotedDeliveryDays = order.deliveryDays
             vendorOperation.quotedTermsAndConditions = ""
+            vendorOperation.quotedProductFile = ""
             vendorOperation.status = "WAITING"
             vendorOperation.vendorName = vendorProfile.name
             //adding vendor & company profile details

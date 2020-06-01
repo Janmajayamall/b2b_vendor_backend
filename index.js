@@ -35,6 +35,7 @@ initializingMongodb
             await mainDbCollections.createVendorCategoryProducts(dbs.mainDb)
             await mainDbCollections.createItemOrders(dbs.mainDb)
             await mainDbCollections.createVendorOrders(dbs.mainDb)
+            await mainDbCollections.createPreferredVendors(dbs.mainDb)
         }
 
         console.log("Connected to mongodb")

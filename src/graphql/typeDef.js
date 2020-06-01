@@ -76,6 +76,7 @@ module.exports = gql`
         unit: String!
         termsAndConditions: String!
         deliveryDays: String!
+        productFile: String!
     }
 
     """

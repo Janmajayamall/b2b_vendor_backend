@@ -8,7 +8,7 @@ module.exports = {
 
             // authenticate the buyer
             const buyerId = await verifyJwt(reqHeaders.authorization)
-
+            console.log(buyerId)
             //TODO: validate the input
             const createOrdersInput = args.userInput
 

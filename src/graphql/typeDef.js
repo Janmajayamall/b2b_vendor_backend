@@ -107,11 +107,35 @@ module.exports = gql`
         quantity: Float!
         unit: String!
         termsAndConditions: String!
+        productFile: String!
         deliveryDays: String!
         buyerGroupId: String!
         createdAt: String!
         lastModified: String!
         status: String!
+    }
+
+    """
+    input dateRangeInput
+    Used for defining date range
+    """
+    input dateRangeInput {
+        startDate: String!
+        endDate: String!
+    }
+
+    """
+    input buyerSearchOrdersInput
+    Used for search orders query
+    """
+    input buyerSearchOrdersInput {
+        buyerRfqId: String
+        buyerPrId: String
+        buyerItemId: String
+        productName: String
+        orderId: String
+        status: String
+        dateRange: dateRangeInput
     }
 
     """
@@ -203,6 +227,7 @@ module.exports = gql`
         unit: String!
         termsAndConditions: String!
         productParameters: String!
+        productFile: String!
         deliveryDays: String!
         buyerId: ID!
         buyerName: String!
@@ -267,6 +292,7 @@ module.exports = gql`
         quotedValidity: Float!
         quotedDeliveryDays: String!
         quotedTermsAndConditions: String!
+        quotedProductFile: String!
         status: String!
 
         # vendor's company
@@ -299,6 +325,7 @@ module.exports = gql`
         quotedValidity: Float
         quotedDeliveryDays: String
         quotedTermsAndConditions: String
+        quotedProductFile: String
     }
 
     type ItemOrderDetailsResponse {
@@ -424,7 +451,7 @@ module.exports = gql`
 
         #vendorOrders
         getIncomingVendorOrders: [VendorOrderSimple!]!
-        getItemOrderDetails(orderId: ID!): ItemOrderDetailsResponse!
+        getVendorOrderDetails(orderId: ID!): ItemOrderDetailsResponse!
         getItemOrderQuotations(userInput: getItemOrderQuotationsInput!): [VendorQuotationSimple!]!
         getQuotationDetails(quotationId: ID!): VendorQuotationSimple!
         getItemOrderQuotationsUnderReview(orderId: ID!): [VendorQuotationSimple!]!
@@ -437,6 +464,7 @@ module.exports = gql`
         #itemOrders
         buyerGetActiveItemOrders: [BuyerItemOrder!]!
         buyerGetItemDetails(orderId: ID!): BuyerItemOrder!
+        buyerSearchOrders(userInput: buyerSearchOrdersInput!): [BuyerItemOrder!]!
 
         #preferredVendors
         companyGetPreferredVendors: [PreferredVendor!]!

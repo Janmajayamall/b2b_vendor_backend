@@ -74,7 +74,7 @@ async function verifyJwt(jwt) {
             }
         )
     } catch (e) {
-        console.error(e, "verify_jwt function | authentication.js")
+        // console.error(e, "verify_jwt function | authentication.js")
         throw new AuthenticationError(`JWT should in format "Bearer [token]"`)
     }
 }

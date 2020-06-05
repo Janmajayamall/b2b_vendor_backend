@@ -140,8 +140,59 @@ async function buyerGetItemDetails(dbs, orderId) {
     return formattedResponse
 }
 
+async function buyerSearchOrders(dbs, buyerId, searchQuery) {
+    let filters = {
+        buyerId: ObjectID(buyerId)
+    }
+
+    //building search queries
+    if (searchQuery.buyerRfqId != undefined && searchQuery.buyerRfqId !== "") {
+        filters.buyerRfqId = searchQuery.buyerRfqId.trim()
+    }
+    if (searchQuery.buyerPrId != undefined && searchQuery.buyerPrId !== "") {
+        filters.buyerPrId = searchQuery.buyerPrId.trim()
+    }
+    if (searchQuery.buyerItemId != undefined && searchQuery.buyerItemId !== "") {
+        filters.buyerItemId = searchQuery.buyerItemId.trim()
+    }
+    if (searchQuery.productName != undefined && searchQuery.productName !== "") {
+        filters.productName = searchQuery.productName.trim()
+    }
+    if (searchQuery.orderId != undefined && searchQuery.orderId !== "") {
+        filters._id = ObjectID(searchQuery.orderId.trim())
+    }
+    if (searchQuery.status != undefined && searchQuery.status !== "") {
+        filters.status = searchQuery.status.trim()
+    }
+    if (searchQuery.dateRange != undefined && Object.keys(searchQuery.dateRange).length > 0) {
+        filters.createdAt = {
+            $gte: searchQuery.dateRange.startDate,
+            $lte: searchQuery.dateRange.endDate
+        }
+    }
+
+    //TODO: handle date range
+
+    const result = await dbs.mainDb.client
+        .collection(dbs.mainDb.collections.itemOrders)
+        .find(filters)
+        .sort({ createdAt: -1 })
+        .toArray()
+
+    //formatting response
+    const formattedResponse = []
+    result.forEach((element) => {
+        formattedResponse.push({
+            ...element,
+            productParameters: JSON.stringify(element.productParameters)
+        })
+    })
+    return formattedResponse
+}
+
 module.exports = {
     createItemOrders,
     buyerGetActiveItemOrders,
-    buyerGetItemDetails
+    buyerGetItemDetails,
+    buyerSearchOrders
 }

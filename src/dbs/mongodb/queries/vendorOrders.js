@@ -105,7 +105,7 @@ async function getIncomingVendorOrders(dbs, vendorId) {
     return result
 }
 
-async function getItemOrderDetails(dbs, vendorId, orderId) {
+async function getVendorOrderDetails(dbs, vendorId, orderId) {
     let result = await dbs.mainDb.client.collection(dbs.mainDb.collections.vendorOrders).findOne({
         vendorId: ObjectID(vendorId),
         orderId: ObjectID(orderId)
@@ -413,7 +413,7 @@ async function getItemOrderAcceptedQuotation(dbs, orderId) {
 module.exports = {
     bulkCreateVendorOrders,
     getIncomingVendorOrders,
-    getItemOrderDetails,
+    getVendorOrderDetails,
     rejectItemOrder,
     updateVendorOrderDetails,
     getItemOrderQuotations,

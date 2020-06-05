@@ -44,6 +44,21 @@ module.exports = {
             const result = await queries.mongoDbQueries.buyerGetItemDetails(dbs, orderId)
 
             return result
+        },
+
+        async buyerSearchOrders(parent, args, context) {
+            //extracting contexts
+            const { dbs, queries, reqHeaders } = context
+
+            // authenticate the buyer
+            const buyerId = await verifyJwt(reqHeaders.authorization)
+
+            // get search query
+            const { userInput } = args
+
+            // search orders
+            const result = await queries.mongoDbQueries.buyerSearchOrders(dbs, buyerId, userInput)
+            return result
         }
     }
 }

@@ -54,8 +54,8 @@ let options = {
     awsConfig: new AWS.Config({
         region: process.env.AWS_REGION,
         credentials: new AWS.Credentials({
-            accessKeyId: process.env.AWS_DYNAMODB_ACCESS_KEY_ID,
-            secretAccessKey: process.env.AWS_DYNAMODB_SECRET_ACCESS_KEY
+            accessKeyId: process.env.AWS_ES_ACCESS_KEY_ID,
+            secretAccessKey: process.env.AWS_ES_SECRET_ACCESS_KEY
         })
     }),
     httpOptions: {} // set httpOptions on aws-sdk's request. default to aws-sdk's config.httpOptions
@@ -88,7 +88,7 @@ const server = new ApolloServer({
 server.applyMiddleware({ app })
 
 //Starting the server
-app.listen({ port: process.env.PORT || 3000 }, function () {
+app.listen({ port: process.env.PORT || 5000 }, function () {
     console.log(`Server started on http://localhost:${process.env.PORT || 3000}${server.graphqlPath}`)
 })
 

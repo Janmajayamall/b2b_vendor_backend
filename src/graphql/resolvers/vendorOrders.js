@@ -86,7 +86,7 @@ module.exports = {
             return result
         },
 
-        async getItemOrderDetails(parent, args, context) {
+        async getVendorOrderDetails(parent, args, context) {
             //extracting contexts
             const { dbs, queries, reqHeaders } = context
 
@@ -96,7 +96,7 @@ module.exports = {
             // getting order id
             const orderId = args.orderId
 
-            const result = await queries.mongoDbQueries.getItemOrderDetails(dbs, vendorId, orderId)
+            const result = await queries.mongoDbQueries.getVendorOrderDetails(dbs, vendorId, orderId)
             return result
         },
 

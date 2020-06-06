@@ -166,8 +166,8 @@ async function buyerSearchOrders(dbs, buyerId, searchQuery) {
     }
     if (searchQuery.dateRange != undefined && Object.keys(searchQuery.dateRange).length > 0) {
         filters.createdAt = {
-            $gte: searchQuery.dateRange.startDate,
-            $lte: searchQuery.dateRange.endDate
+            $gte: new Date(searchQuery.dateRange.startDate),
+            $lte: new Date(searchQuery.dateRange.endDate)
         }
     }
 
@@ -190,9 +190,48 @@ async function buyerSearchOrders(dbs, buyerId, searchQuery) {
     return formattedResponse
 }
 
+async function closeItemOrder(dbs, orderId) {
+    //check whether the item is already closed
+    let resCheck = await dbs.mainDb.client.collection(dbs.mainDb.collections.itemOrders).findOne({
+        _id: ObjectID(orderId)
+    })
+
+    if (resCheck == undefined) {
+        return true
+    }
+
+    if (resCheck.status === "NOT_ACTIVE") {
+        console.log("double play")
+        return true
+    }
+
+    let resItemOrder = await dbs.mainDb.client.collection(dbs.mainDb.collections.itemOrders).findOneAndUpdate(
+        {
+            _id: ObjectID(orderId)
+        },
+        {
+            $set: { status: "NOT_ACTIVE" }
+        }
+    )
+
+    //reject all the quotations of belonging to this item order
+    let resOne = await dbs.mainDb.client.collection(dbs.mainDb.collections.vendorOrders).updateMany(
+        {
+            status: { $nin: ["CANCELLED"] },
+            orderId: { $eq: ObjectID(orderId) }
+        },
+        {
+            $set: { status: "REJECTED" }
+        }
+    )
+
+    return true
+}
+
 module.exports = {
     createItemOrders,
     buyerGetActiveItemOrders,
     buyerGetItemDetails,
-    buyerSearchOrders
+    buyerSearchOrders,
+    closeItemOrder
 }

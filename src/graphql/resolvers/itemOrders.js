@@ -15,6 +15,20 @@ module.exports = {
             //creating orders for all the items
             const result = await queries.mongoDbQueries.createItemOrders(dbs, queries, createOrdersInput, buyerId)
             return result
+        },
+
+        async closeItemOrder(parent, args, context) {
+            //extracting contexts
+            const { dbs, queries, reqHeaders } = context
+
+            // authenticate the buyer
+            const buyerId = await verifyJwt(reqHeaders.authorization)
+
+            // extract order id
+            const { orderId } = args
+
+            const result = await queries.mongoDbQueries.closeItemOrder(dbs, orderId)
+            return result
         }
     },
     Query: {

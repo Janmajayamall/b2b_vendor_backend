@@ -426,6 +426,7 @@ module.exports = gql`
 
         #itemOrders
         createItemOrders(userInput: createItemOrdersInput!): Boolean!
+        closeItemOrder(orderId: ID!): Boolean!
 
         #vendorOrders
         updateVendorOrderDetails(orderId: ID!, userInput: updateVendorOrderDetailsInput!): ErrorStateResponse!

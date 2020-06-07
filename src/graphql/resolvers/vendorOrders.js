@@ -154,6 +154,20 @@ module.exports = {
 
             const result = await queries.mongoDbQueries.getItemOrderAcceptedQuotation(dbs, orderId)
             return result
+        },
+
+        async vendorSearchOrders(parent, args, context) {
+            //extracting contexts
+            const { dbs, queries, reqHeaders } = context
+
+            // authenticate the vendor
+            const vendorId = await verifyJwt(reqHeaders.authorization)
+
+            //extracting userInput
+            const { userInput } = args
+
+            const result = await queries.mongoDbQueries.vendorSearchOrders(dbs, vendorId, userInput)
+            return result
         }
     }
 }

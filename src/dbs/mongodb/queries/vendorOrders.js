@@ -410,6 +410,45 @@ async function getItemOrderAcceptedQuotation(dbs, orderId) {
     return formattedResult
 }
 
+async function vendorSearchOrders(dbs, vendorId, searchQuery) {
+    let filters = {
+        vendorId: ObjectID(vendorId),
+        status: { $ne: "WAITING" }
+    }
+
+    //putting in the filters
+    if (searchQuery.companyName != undefined && searchQuery.companyName.trim() !== "") {
+        filters.companyName = searchQuery.companyName.trim()
+    }
+    if (searchQuery.orderId != undefined && searchQuery.orderId.trim() !== "") {
+        filters.orderId = ObjectID(searchQuery.orderId.trim())
+    }
+    if (searchQuery.status != undefined && searchQuery.status.trim() !== "") {
+        if (searchQuery.status.trim() === "QUOTED_REVIEW") {
+            filters.status = { $in: ["QUOTED", "REVIEW"] }
+        } else {
+            filters.status = searchQuery.status.trim()
+        }
+    }
+
+    console.log(filters, searchQuery)
+
+    if (searchQuery.dateRange != undefined && Object.keys(searchQuery.dateRange).length > 0) {
+        filters.createdAt = {
+            $gte: new Date(searchQuery.dateRange.startDate),
+            $lte: new Date(searchQuery.dateRange.endDate)
+        }
+    }
+
+    const result = await dbs.mainDb.client
+        .collection(dbs.mainDb.collections.vendorOrders)
+        .find(filters)
+        .sort({ createdAt: -1 })
+        .toArray()
+
+    return result
+}
+
 module.exports = {
     bulkCreateVendorOrders,
     getIncomingVendorOrders,
@@ -422,5 +461,6 @@ module.exports = {
     buyerUnmarkUnderReviewQuotation,
     buyerFinalizeQuotation,
     getItemOrderQuotationsUnderReview,
-    getItemOrderAcceptedQuotation
+    getItemOrderAcceptedQuotation,
+    vendorSearchOrders
 }

@@ -139,6 +139,17 @@ module.exports = gql`
     }
 
     """
+    input vendorSearchOrdersInput
+    Used for searching quotations quoted by vendor
+    """
+    input vendorSearchOrdersInput {
+        companyName: String
+        orderId: ID
+        status: String
+        dateRange: dateRangeInput
+    }
+
+    """
     input registerCompanyInput
     Used for registration/Login for the company with admin's emailid
     """
@@ -208,6 +219,7 @@ module.exports = gql`
         companyState: String!
         companyLocationCoordinates: [Float!]!
         companyCountry: String!
+        status: String!
     }
 
     """
@@ -253,6 +265,7 @@ module.exports = gql`
         quotedValidity: Float!
         quotedDeliveryDays: String!
         quotedTermsAndConditions: String!
+        quotedProductFile: String!
         status: String!
 
         # vendor's company
@@ -452,6 +465,7 @@ module.exports = gql`
 
         #vendorOrders
         getIncomingVendorOrders: [VendorOrderSimple!]!
+        vendorSearchOrders(userInput: vendorSearchOrdersInput!): [VendorOrderSimple!]!
         getVendorOrderDetails(orderId: ID!): ItemOrderDetailsResponse!
         getItemOrderQuotations(userInput: getItemOrderQuotationsInput!): [VendorQuotationSimple!]!
         getQuotationDetails(quotationId: ID!): VendorQuotationSimple!
